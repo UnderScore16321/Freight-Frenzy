@@ -86,6 +86,7 @@ public class BasicOpMode_Iterative extends OpMode
      */
     @Override
     public void init_loop() {
+        int fore = 38;
     }
 
     /*
@@ -104,7 +105,6 @@ public class BasicOpMode_Iterative extends OpMode
         // Setup a variable for each drive wheel to save power level for telemetry
         double leftPower;
         double rightPower;
-
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
 
@@ -123,7 +123,7 @@ public class BasicOpMode_Iterative extends OpMode
         // Send calculated power to wheels
         leftDrive.setPower(leftPower);
         rightDrive.setPower(rightPower);
-
+        leftDrive.setPower(leftPower);
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
