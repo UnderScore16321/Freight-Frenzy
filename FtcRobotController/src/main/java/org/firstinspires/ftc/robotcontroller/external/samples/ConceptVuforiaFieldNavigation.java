@@ -74,7 +74,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  */
 
 @TeleOp(name="Vuforia Field Nav", group ="Concept")
-@Disabled
+//@Disabled
 public class ConceptVuforiaFieldNavigation extends LinearOpMode {
 
     // IMPORTANT:  For Phone Camera, set 1) the camera source and 2) the orientation, based on how your phone is mounted:
@@ -97,7 +97,7 @@ public class ConceptVuforiaFieldNavigation extends LinearOpMode {
      * and paste it in to your code on the next line, between the double quotes.
      */
     private static final String VUFORIA_KEY =
-            " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+            "AfSseFH/////AAABmTixgILGYET/sPXO1PxWUxNNgDwNT8cJID1YtH7NBefcuPDiZnv8W4pz41nlaADb5px4nmc9jYffFZ2bHqSCgmVGhD+vOGX7rvH47stNi8sOtq3e/sFpEbJWBq4e5yy3ZM8puXp9XDaKQakERNfZkTvnJpWG+tigscz8lf4xSQ9A80Y5WsT+94jdK1Cw4cTC9pkmkSMWtPhTi4Hmw9tnEDwagBUPKichJsMnoiJdxfC/VTg4jhkL+6BEDUynD2Yntujcm61tWSFjS9JZjgeET70Yr2XrhnY10ZS20eH6VFsi0h+oEbtOZGvilgLz9cHyRo++IHKnCtb3Wzlp/7LnNrPaCqB+ynhKQ3C64PoDmjtz";
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here.  These are useful for the Freight Frenzy field.
