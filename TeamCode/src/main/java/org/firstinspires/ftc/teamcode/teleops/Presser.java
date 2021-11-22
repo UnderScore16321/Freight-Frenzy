@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
 /**
- * A utlity class to determine if a button was pressed.
+ * A utility class to determine if a button was pressed.
  */
 public class Presser {
     private boolean lastState = false;
@@ -12,16 +12,11 @@ public class Presser {
      * @param currentBtnState The state of the button now.
      * @return If the button was just pressed.
      */
-    public boolean wasPressed(boolean currentBtnState)
-    {
-        if(currentBtnState && !lastState)
-        {
+    public boolean wasPressed(boolean currentBtnState) {
+        if(currentBtnState && !lastState) {
             lastState = true;
-
             return true;
-        }
-        else if (!currentBtnState)
-        {
+        } else if (!currentBtnState) {
             lastState = false;
         }
         return false;

@@ -3,13 +3,13 @@ package org.firstinspires.ftc.teamcode.autos;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.HardwareMap;
+import org.firstinspires.ftc.teamcode.Hardware;
 
 @Autonomous(name = "[Blue Right] Simple Auto (12/32)", group = "Competition")
 public class BlueRightSimpleAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        HardwareMap hm = new HardwareMap(this);
+        AutoHardware hm = new AutoHardware(this, false);
 
         hm.setGrabberIsOpen(false);
         waitForStart();
@@ -23,17 +23,14 @@ public class BlueRightSimpleAuto extends LinearOpMode {
         hm.turnDegrees(-35);
 
         //deposit on goal
-        hm.setGrabberHeight(HardwareMap.GrabberHeight.FIRST_LEVEL);
-        hm.waitForGrabber();
+        hm.setGrabberHeight(Hardware.GrabberHeight.FIRST_LEVEL);
         hm.driveInches(7);
         hm.setGrabberIsOpen(true);
-        hm.waitForGrabbing();
 
         //drive to storage unit
         hm.driveInches(-7);
         hm.turnDegrees(80);
-        hm.setGrabberHeight(HardwareMap.GrabberHeight.SECOND_LEVEL);
-        hm.waitForGrabber();
+        hm.setGrabberHeight(Hardware.GrabberHeight.SECOND_LEVEL);
         hm.driveInches(19);
         hm.turnDegrees(40);
         hm.driveInches(8);

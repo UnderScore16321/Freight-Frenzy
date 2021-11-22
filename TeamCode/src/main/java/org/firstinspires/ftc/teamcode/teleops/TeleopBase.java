@@ -4,6 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Side;
 
+/**
+ * A base class for opmodes. It provides access to the teleop hardware and advances gamepads.
+ */
 public abstract class TeleopBase extends LinearOpMode {
     protected TeleopHardware hw;
     protected AdvancedGamepad aGamepad1;
