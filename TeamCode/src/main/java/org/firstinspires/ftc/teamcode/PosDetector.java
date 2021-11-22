@@ -3,6 +3,10 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
+import com.google.gson.internal.$Gson$Preconditions;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,8 +15,10 @@ public class PosDetector {
 
     private final ImRegion[] searchRegions;
     private float[][] baseStates;
+    private Telemetry telemetry;
 
-    PosDetector(ImRegion[] searchRegions) {
+    PosDetector(Telemetry telemetry, ImRegion[] searchRegions) {
+        this.telemetry = telemetry;
         this.searchRegions = searchRegions;
     }
 
@@ -38,7 +44,7 @@ public class PosDetector {
     private static final float H_MULT = 1.0f;
     private static final float S_MULT = 1.0f;
     private static final float L_MULT = 0f;
-    private static final float MAX_DIFF = 40;
+    private static final float MIN_DIFF = 20;
 
     public int regionOfImage(Bitmap image) {
         if (baseStates == null) throw new IllegalArgumentException();
@@ -46,6 +52,8 @@ public class PosDetector {
         float[][] hsls = new float[searchRegions.length][3];
         for (int r = 0; r < searchRegions.length; r++) {
             float[] hsl = averageHSLInRegion(image, searchRegions[r]);
+//            telemetry.addData("base " + r, hslToStr(baseStates[r]));
+//            telemetry.addData("obs " + r, hslToStr(hsl));
             hsls[r][0] = hsl[0];
             hsls[r][1] = hsl[1];
             hsls[r][2] = hsl[2];
@@ -60,9 +68,10 @@ public class PosDetector {
 
         int diffLoc = -1;
         for (int d = 0; d < differencesFromBaseStates.length; d++) {
-            if (diffLoc == -1 && differencesFromBaseStates[d] < MAX_DIFF) {
+            telemetry.addData("diff " + d, differencesFromBaseStates[d]);
+            if (diffLoc == -1 && differencesFromBaseStates[d] > MIN_DIFF) {
                 diffLoc = d;
-            } else if (diffLoc != -1 && differencesFromBaseStates[d] < differencesFromBaseStates[diffLoc]) {
+            } else if (diffLoc != -1 && differencesFromBaseStates[d] > differencesFromBaseStates[diffLoc]) {
                 diffLoc = d;
             }
         }
@@ -124,6 +133,10 @@ public class PosDetector {
 
     }
 
+    private static String hslToStr(float[] hsl) {
+        return hsl[0] + ", " + hsl[1] + ", " + hsl[2];
+    }
+
     private static float[] rgbToHSL(int rIn, int gIn, int bIn) {
         float r = (float) (rIn / 255.0);
         float g = (float) (gIn / 255.0);
@@ -166,7 +179,7 @@ public class PosDetector {
     static class ImRegion {
         float x1, y1, x2, y2;
 
-        ImRegion(float x1, float y1, float x2, float y2) {
+        ImRegion(float x1, float x2, float y1, float y2) {
             this.x1 = x1;
             this.y1 = y1;
             this.x2 = x2;
