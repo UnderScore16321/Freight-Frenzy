@@ -10,13 +10,13 @@ import java.util.List;
 
 @TeleOp
 public class CameraTest extends LinearOpMode {
-    TeamHardwareMap hm;
+    HardwareMap hm;
 
     private static final float PURPLE_TOL = 20;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        hm = new TeamHardwareMap(this, true);
+        hm = new HardwareMap(this, true);
         PosDetector posDetector = new PosDetector(telemetry, new PosDetector.ImRegion[] {
                 new PosDetector.ImRegion(2.0f / 5.0f, 3.0f / 5.0f, 2.0f / 3.0f, 1.0f),
                 new PosDetector.ImRegion(4.0f / 5.0f, 1.0f, 2.0f / 3.0f, 1.0f),

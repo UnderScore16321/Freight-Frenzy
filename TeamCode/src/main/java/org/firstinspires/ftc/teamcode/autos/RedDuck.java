@@ -3,13 +3,13 @@ package org.firstinspires.ftc.teamcode.autos;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.TeamHardwareMap;
+import org.firstinspires.ftc.teamcode.HardwareMap;
 
 @Autonomous(name = "[Red Left] Duck Auto", group = "Competition")
 public class RedDuck extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        TeamHardwareMap hm = new TeamHardwareMap(this);
+        HardwareMap hm = new HardwareMap(this);
 
         hm.setGrabberIsOpen(false);
         waitForStart();
@@ -24,14 +24,14 @@ public class RedDuck extends LinearOpMode {
         hm.setWheelPower(0);
 
         hm.turnDegrees(12);
-        hm.setGrabberHeight(TeamHardwareMap.GrabberHeight.FIRST_LEVEL);
+        hm.setGrabberHeight(HardwareMap.GrabberHeight.FIRST_LEVEL);
         hm.driveInches(35);
         hm.setGrabberIsOpen(true);
         hm.waitForGrabbing();
 
         hm.driveInches(-7);
         hm.turnDegrees(-110);
-        hm.setGrabberHeight(TeamHardwareMap.GrabberHeight.SECOND_LEVEL);
+        hm.setGrabberHeight(HardwareMap.GrabberHeight.SECOND_LEVEL);
         hm.driveInches(20);
     }
 }
