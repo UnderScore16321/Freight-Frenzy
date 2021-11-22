@@ -7,29 +7,18 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class TeamHardwareMap {
-    private LinearOpMode opMode;
+public class HardwareMap extends Hardware {
 
-    public TeamHardwareMap(LinearOpMode opMode, boolean camera) {
-        this.opMode = opMode;
-
-        initWheels();
-        initSpinner();
+    public HardwareMap(LinearOpMode opMode, boolean camera) {
+        super(opMode, camera);
         initGrabber();
-        if(camera) initCamera();
     }
 
-    public TeamHardwareMap(LinearOpMode opMode) {
+    public HardwareMap(LinearOpMode opMode) {
         this(opMode, false);
     }
 
     // Camera --------------------------------------------------------------------------------------
-
-    private SimpleCamera camera;
-
-    private void initCamera() {
-        camera = new SimpleCamera("camera", opMode);
-    }
 
     public Bitmap getLatestFrame() {
         return camera != null ? camera.getLatestFrame() : null;
@@ -50,21 +39,6 @@ public class TeamHardwareMap {
     }
 
     // Wheels --------------------------------------------------------------------------------------
-
-    private DcMotor leftFront;
-    private DcMotor leftBack;
-    private DcMotor rightFront;
-    private DcMotor rightBack;
-
-    private void initWheels() {
-        leftFront = opMode.hardwareMap.dcMotor.get("left front");
-        leftBack = opMode.hardwareMap.dcMotor.get("left back");
-        rightFront = opMode.hardwareMap.dcMotor.get("right front");
-        rightBack = opMode.hardwareMap.dcMotor.get("right back");
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        setAllMotorModes(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-    }
 
     private static final double TICKS_PER_ROT = 537.6;
     private static final double WHEEL_DIAMETER = 5;
@@ -149,12 +123,6 @@ public class TeamHardwareMap {
 
     // Spinner -------------------------------------------------------------------------------------
 
-    private DcMotor spinner;
-
-    private void initSpinner() {
-        spinner = opMode.hardwareMap.dcMotor.get("spinner");
-    }
-
     private static final double SPINNER_MAX_POWER = 0.5;
 
     public void setSpinnerPower(double power) {
@@ -163,18 +131,11 @@ public class TeamHardwareMap {
 
     // Grabber -------------------------------------------------------------------------------------
 
-    private DcMotor grabberMotor;
-    private Servo leftGrabber;
-    private Servo rightGrabber;
-
     private void initGrabber() {
-        grabberMotor = opMode.hardwareMap.dcMotor.get("grabber motor");
         grabberMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         grabberMotor.setPower(1);
         setGrabberHeight(GrabberHeight.DOWN);
         grabberMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftGrabber = opMode.hardwareMap.servo.get("left grabber");
-        rightGrabber = opMode.hardwareMap.servo.get("right grabber");
     }
 
     public void resetGrabberEncoder() throws InterruptedException {

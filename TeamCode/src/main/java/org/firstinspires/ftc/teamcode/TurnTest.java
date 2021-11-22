@@ -8,7 +8,7 @@ public class TurnTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        TeamHardwareMap hm = new TeamHardwareMap(this);
+        HardwareMap hm = new HardwareMap(this);
 
         waitForStart();
 
