@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Bitmap;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -8,12 +10,43 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class TeamHardwareMap {
     private LinearOpMode opMode;
 
-    public TeamHardwareMap(LinearOpMode opMode) {
+    public TeamHardwareMap(LinearOpMode opMode, boolean camera) {
         this.opMode = opMode;
 
         initWheels();
         initSpinner();
         initGrabber();
+        if(camera) initCamera();
+    }
+
+    public TeamHardwareMap(LinearOpMode opMode) {
+        this(opMode, false);
+    }
+
+    // Camera --------------------------------------------------------------------------------------
+
+    private SimpleCamera camera;
+
+    private void initCamera() {
+        camera = new SimpleCamera("camera", opMode);
+    }
+
+    public Bitmap getLatestFrame() {
+        return camera != null ? camera.getLatestFrame() : null;
+    }
+
+    public Bitmap forceGetFrame() throws InterruptedException {
+        do {
+            Bitmap frame = getLatestFrame();
+            if (frame != null) return frame;
+            Thread.sleep(100);
+        } while (true);
+    }
+
+    public void closeCamera() {
+        if(camera != null) {
+            camera.closeCamera();
+        }
     }
 
     // Wheels --------------------------------------------------------------------------------------
@@ -38,25 +71,35 @@ public class TeamHardwareMap {
     private static final double INCHES_PER_ROT = 3.14159 * WHEEL_DIAMETER;
     private static final double TICKS_PER_INCH = TICKS_PER_ROT / INCHES_PER_ROT;
 
-    public void driveInches(double inches) {
+    public void driveInches(double inches) throws InterruptedException {
         setWheelPower(1);
         setAllMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         setAllTargetPosition(-inchesToTicks(inches));
         setAllMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
+
+        waitForEncoders();
     }
 
-    private static final double TICKS_PER_DEGREE = 6.17;
+    private static final double TICKS_PER_DEGREE = 5.85;
 
-    public void turnDegrees(double degrees) {
-        setWheelPower(1);
+    public void turnDegrees(double degrees) throws InterruptedException {
+        setWheelPower(0.75);
         setAllMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         int ticks = (int) (degrees * TICKS_PER_DEGREE);
-        setTargetPositions(ticks, -ticks);
+        setTargetPositions(-ticks, ticks);
         setAllMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
+
+        waitForEncoders();
     }
 
     public boolean isEncoderDriving() {
         return leftBack.isBusy() || leftFront.isBusy() || rightBack.isBusy() || rightFront.isBusy();
+    }
+
+    public void waitForEncoders() throws InterruptedException {
+        while (isEncoderDriving()) {
+            Thread.sleep(100);
+        }
     }
 
     private int inchesToTicks(double inches) {
@@ -127,18 +170,31 @@ public class TeamHardwareMap {
     private void initGrabber() {
         grabberMotor = opMode.hardwareMap.dcMotor.get("grabber motor");
         grabberMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        grabberMotor.setPower(0.5);
-        setGrabberHeight(GrabberHeight.UP);
+        grabberMotor.setPower(1);
+        setGrabberHeight(GrabberHeight.DOWN);
+        grabberMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftGrabber = opMode.hardwareMap.servo.get("left grabber");
         rightGrabber = opMode.hardwareMap.servo.get("right grabber");
     }
 
+    public void resetGrabberEncoder() throws InterruptedException {
+        grabberMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        grabberMotor.setPower(.5);
+        Thread.sleep(500);
+        grabberMotor.setPower(0);
+        Thread.sleep(50);
+        grabberMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setGrabberHeight(GrabberHeight.DOWN);
+        grabberMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        grabberMotor.setPower(1);
+    }
+
     private boolean grabberIsOpen = false;
 
-    private static final double LEFT_OPEN = 0;
-    private static final double RIGHT_OPEN = 1;
-    private static final double LEFT_CLOSED = 1;
-    private static final double RIGHT_CLOSED = 0;
+    private static final double RIGHT_CLOSED = 0.62;
+    private static final double RIGHT_OPEN = 0.5;
+    private static final double LEFT_CLOSED = 0.78;
+    private static final double LEFT_OPEN = 0.9;
 
     public void setGrabberIsOpen(boolean isOpen) {
         grabberIsOpen = isOpen;
@@ -147,7 +203,7 @@ public class TeamHardwareMap {
             rightGrabber.setPosition(RIGHT_OPEN);
         } else {
             leftGrabber.setPosition(LEFT_CLOSED);
-            leftGrabber.setPosition(RIGHT_CLOSED);
+            rightGrabber.setPosition(RIGHT_CLOSED);
         }
     }
 
@@ -159,9 +215,14 @@ public class TeamHardwareMap {
         return grabberIsOpen;
     }
 
+    public void waitForGrabbing() throws InterruptedException {
+        Thread.sleep(300);
+    }
+
     public enum GrabberHeight {
-        UP(0),
-        DOWN(200);
+        SECOND_LEVEL(280),
+        FIRST_LEVEL(100),
+        DOWN(0);
 
         private final int inTicks;
 
@@ -172,16 +233,68 @@ public class TeamHardwareMap {
         public int getInTicks() {
             return inTicks;
         }
+
+        public GrabberHeight above() {
+            if (this == SECOND_LEVEL) {
+                return SECOND_LEVEL;
+            } else if (this == FIRST_LEVEL) {
+                return SECOND_LEVEL;
+            } else {
+                return FIRST_LEVEL;
+            }
+        }
+
+        public GrabberHeight below() {
+            if (this == SECOND_LEVEL) {
+                return FIRST_LEVEL;
+            } else if (this == FIRST_LEVEL) {
+                return DOWN;
+            } else {
+                return DOWN;
+            }
+        }
     }
 
     private GrabberHeight currentGrabberHeight;
+    private int grabberOffset = 0;
 
     public void setGrabberHeight(GrabberHeight position) {
         currentGrabberHeight = position;
-        grabberMotor.setTargetPosition(position.getInTicks());
+        setGrabberTargetPosition();
+    }
+
+    public void lowerGrabberHeight() {
+        setGrabberHeight(currentGrabberHeight.below());
+    }
+
+    public void raiseGrabberHeight() {
+        setGrabberHeight(currentGrabberHeight.above());
+    }
+
+    public void setGrabberOffset(int offset) {
+        grabberOffset = offset;
+        setGrabberTargetPosition();
+    }
+
+    public void waitForGrabber() throws InterruptedException {
+        while (grabberMotor.isBusy()) {
+            Thread.sleep(100);
+        }
+    }
+
+    private void setGrabberTargetPosition() {
+        grabberMotor.setTargetPosition(-currentGrabberHeight.getInTicks() - grabberOffset);
     }
 
     public GrabberHeight getCurrentGrabberHeight() {
         return currentGrabberHeight;
+    }
+
+    public void displayGrabberTelemetry() {
+        opMode.telemetry.addData("motor", grabberMotor.getCurrentPosition());
+        opMode.telemetry.addData("target pos", grabberMotor.getTargetPosition());
+        opMode.telemetry.addData("l servo", leftGrabber.getPosition());
+        opMode.telemetry.addData("r servo", rightGrabber.getPosition());
+        opMode.telemetry.update();
     }
 }
