@@ -7,29 +7,39 @@ import org.firstinspires.ftc.teamcode.Toggler;
 
 public class TankDriveBase extends LinearOpMode {
 
-    protected int SPINNER_MULTIPLIER = 1;
-
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         TeamHardwareMap hm = new TeamHardwareMap(this);
         Toggler grabberOpen = new Toggler();
-        Toggler grabberHeight = new Toggler();
+        Toggler grabberDown = new Toggler();
+        Toggler grabberUp = new Toggler();
+        Toggler resetGrabber = new Toggler();
+
+        hm.setGrabberIsOpen(false);
 
         waitForStart();
 
+//        hm.resetGrabberEncoder();
+
         while (opModeIsActive()) {
+            if (resetGrabber.shouldToggle(gamepad2.x)) {
+                hm.resetGrabberEncoder();
+            }
+
             hm.setWheelPower(gamepad1.left_stick_y, gamepad1.right_stick_y);
-            hm.setSpinnerPower(Math.max(gamepad2.left_stick_y * SPINNER_MULTIPLIER, 0));
+
+            hm.setSpinnerPower(Math.max(gamepad2.left_stick_y, 0) * -1);
+
             if (grabberOpen.shouldToggle(gamepad2.right_bumper)) {
                 hm.toggleGrabberState();
             }
-            if (grabberHeight.shouldToggle(gamepad2.left_bumper)) {
-                if (hm.getCurrentGrabberHeight() == TeamHardwareMap.GrabberHeight.UP) {
-                    hm.setGrabberHeight(TeamHardwareMap.GrabberHeight.DOWN);
-                } else {
-                    hm.setGrabberHeight(TeamHardwareMap.GrabberHeight.UP);
-                }
+            if (grabberDown.shouldToggle(gamepad2.dpad_up)) {
+                hm.raiseGrabberHeight();
+            } else if (grabberUp.shouldToggle(gamepad2.dpad_down)) {
+                hm.lowerGrabberHeight();
             }
+            hm.setGrabberOffset((int) (gamepad2.left_trigger * 50));
+            hm.displayGrabberTelemetry();
         }
     }
 }
