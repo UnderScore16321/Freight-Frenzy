@@ -2,18 +2,32 @@ package org.firstinspires.ftc.teamcode.autos;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 
 public class AutoHardware extends Hardware {
     AutoHardware(LinearOpMode opMode, boolean camera) throws InterruptedException {
         super(opMode, camera);
+        initWheels();
     }
 
     // Driving -------------------------------------------------------------------------------------
 
     private void initWheels() {
+        leftFront.setTargetPositionTolerance(15);
+        leftBack.setTargetPositionTolerance(15);
+        rightFront.setTargetPositionTolerance(15);
+        rightBack.setTargetPositionTolerance(15);
+    }
 
+    public void setVelocity(double speed) {
+        setWheelPower(1);
+        setAllMotorModes(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFront.setVelocity(speed);
+        leftBack.setVelocity(speed);
+        rightFront.setVelocity(speed);
+        rightBack.setVelocity(speed);
     }
 
     private static final double TICKS_PER_ROT = 537.6;
@@ -24,7 +38,7 @@ public class AutoHardware extends Hardware {
     public void driveInches(double inches) throws InterruptedException {
         setWheelPower(1);
         setAllMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        setAllTargetPosition(-inchesToTicks(inches));
+        setAllTargetPosition(inchesToTicks(inches));
         setAllMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
         waitForEncoders();
     }
@@ -32,12 +46,11 @@ public class AutoHardware extends Hardware {
     private static final double TICKS_PER_DEGREE = 5.85;
 
     public void turnDegrees(double degrees) throws InterruptedException {
-        setWheelPower(0.75);
+        setWheelPower(1);
         setAllMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         int ticks = (int) (degrees * TICKS_PER_DEGREE);
-        setTargetPositions(-ticks, ticks);
+        setTargetPositions(ticks, -ticks);
         setAllMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
-
         waitForEncoders();
     }
 
@@ -47,6 +60,7 @@ public class AutoHardware extends Hardware {
 
     public void waitForEncoders() throws InterruptedException {
         while (isEncoderDriving()) {
+            displayWheelTelemetry();
             Thread.sleep(100);
         }
     }
@@ -74,10 +88,10 @@ public class AutoHardware extends Hardware {
     }
 
     public void displayWheelTelemetry() {
-        opMode.telemetry.addData("left front", leftFront.getCurrentPosition());
-        opMode.telemetry.addData("left back", leftBack.getCurrentPosition());
-        opMode.telemetry.addData("right front", rightFront.getCurrentPosition());
-        opMode.telemetry.addData("right back", rightBack.getCurrentPosition());
+        opMode.telemetry.addData("left front", leftFront.getTargetPosition() - leftFront.getCurrentPosition());
+        opMode.telemetry.addData("left back", leftBack.getTargetPosition() - leftBack.getCurrentPosition());
+        opMode.telemetry.addData("right front", rightFront.getTargetPosition() - rightFront.getCurrentPosition());
+        opMode.telemetry.addData("right back", rightBack.getTargetPosition() - rightBack.getCurrentPosition());
         opMode.telemetry.update();
     }
 

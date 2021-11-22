@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Pair;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -20,18 +23,18 @@ public class Hardware {
 
     // Wheels --------------------------------------------------------------------------------------
 
-    protected DcMotor leftFront;
-    protected DcMotor leftBack;
-    protected DcMotor rightFront;
-    protected DcMotor rightBack;
+    protected DcMotorEx leftFront;
+    protected DcMotorEx leftBack;
+    protected DcMotorEx rightFront;
+    protected DcMotorEx rightBack;
 
     private void initWheels() {
-        leftFront = opMode.hardwareMap.dcMotor.get("left front");
-        leftBack = opMode.hardwareMap.dcMotor.get("left back");
-        rightFront = opMode.hardwareMap.dcMotor.get("right front");
-        rightBack = opMode.hardwareMap.dcMotor.get("right back");
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront = (DcMotorEx) opMode.hardwareMap.dcMotor.get("left front");
+        leftBack = (DcMotorEx) opMode.hardwareMap.dcMotor.get("left back");
+        rightFront = (DcMotorEx) opMode.hardwareMap.dcMotor.get("right front");
+        rightBack = (DcMotorEx) opMode.hardwareMap.dcMotor.get("right back");
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     /**
@@ -54,6 +57,10 @@ public class Hardware {
      */
     public void setWheelPower(double power) {
         setWheelPower(power, power);
+    }
+
+    public double leftFrontVelocity() {
+        return leftFront.getVelocity();
     }
 
     // Spinner -------------------------------------------------------------------------------------
