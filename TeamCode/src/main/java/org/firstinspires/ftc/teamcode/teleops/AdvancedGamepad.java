@@ -54,8 +54,8 @@ public class AdvancedGamepad {
     public boolean dpadDownPressed() { return dDown.wasPressed(gamepad.dpad_down); }
     public boolean dpadLeftPressed() { return dLeft.wasPressed(gamepad.dpad_left); }
 
-    public double leftX() { return gamepad.left_stick_x; }
-    public double leftY() { return -gamepad.left_stick_y; }
-    public double rightX() { return gamepad.right_stick_x; }
-    public double rightY() { return -gamepad.right_stick_y; }
+    public float leftX() { return gamepad.left_stick_x; }
+    public float leftY() { return -gamepad.left_stick_y; }
+    public float rightX() { return gamepad.right_stick_x; }
+    public float rightY() { return -gamepad.right_stick_y; }
 }
