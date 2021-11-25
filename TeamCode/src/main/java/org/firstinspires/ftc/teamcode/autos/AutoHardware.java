@@ -2,12 +2,12 @@ package org.firstinspires.ftc.teamcode.autos;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Hardware;
 
 public class AutoHardware extends Hardware {
-    AutoHardware(LinearOpMode opMode, boolean camera) throws InterruptedException {
+    public AutoHardware(LinearOpMode opMode, boolean camera) throws InterruptedException {
         super(opMode, camera);
         initWheels();
     }
@@ -43,7 +43,10 @@ public class AutoHardware extends Hardware {
         waitForEncoders();
     }
 
-    private static final double TICKS_PER_DEGREE = 5.85;
+    // -----
+
+//    private static final double TICKS_PER_DEGREE = 5.85;
+    private static final double TICKS_PER_DEGREE = 5.27;
 
     public void turnDegrees(double degrees) throws InterruptedException {
         setWheelPower(1);
@@ -53,6 +56,49 @@ public class AutoHardware extends Hardware {
         setAllMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
         waitForEncoders();
     }
+
+    public void goToHeading(double angle) throws InterruptedException {
+        setAllMotorModes(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setTargetPositionBasedOnHeading(angle);
+        setAllMotorModes(DcMotor.RunMode.RUN_TO_POSITION);
+        int correctCount = 0;
+        while (!opMode.isStopRequested() && correctCount < 20) {
+            double error = headingError(angle);
+            setWheelPower(Range.clip(Math.abs(error) / 180.0, 0.08, 1.0) * 0.6);
+            setTargetPositionBasedOnHeading(angle);
+//            Thread.sleep(10);
+            if (Math.abs(headingError(angle)) < 1) {
+                correctCount++;
+            } else {
+                correctCount = 0;
+            }
+        }
+    }
+
+    private void setTargetPositionBasedOnHeading(double angle) {
+        double error = headingError(angle);
+        if (error < 0) error += 360;
+        if (error > 180) error -= 360;
+        int ticks = (int) (error * TICKS_PER_DEGREE);
+//        setTargetPositions(ticks, -ticks);
+        leftFront.setTargetPosition(leftFront.getCurrentPosition() + ticks);
+        leftBack.setTargetPosition(leftBack.getCurrentPosition() + ticks);
+        rightFront.setTargetPosition(rightFront.getCurrentPosition() - ticks);
+        rightBack.setTargetPosition(rightBack.getCurrentPosition() - ticks);
+        opMode.telemetry.addData("ticks", ticks);
+        opMode.telemetry.addData("heading", robotHeading());
+        opMode.telemetry.addData("error", error);
+        opMode.telemetry.addData("lf t", leftFront.getTargetPosition());
+        opMode.telemetry.addData("lf a", leftFront.getCurrentPosition());
+        opMode.telemetry.update();
+
+    }
+
+    public double headingError(double targetAngle) {
+        return (targetAngle - robotHeading()) % 360;
+    }
+
+    // -----
 
     public boolean isEncoderDriving() {
         return leftBack.isBusy() || leftFront.isBusy() || rightBack.isBusy() || rightFront.isBusy();

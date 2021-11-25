@@ -18,6 +18,7 @@ public abstract class TeleopBase extends LinearOpMode {
         aGamepad1 = new AdvancedGamepad(gamepad1);
         aGamepad2 = new AdvancedGamepad(gamepad2);
         opModeCode();
+        hw.close();
     }
 
     /**

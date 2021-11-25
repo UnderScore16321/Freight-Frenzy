@@ -17,7 +17,7 @@ public class PosDetector {
     private float[][] baseStates;
     private Telemetry telemetry;
 
-    PosDetector(Telemetry telemetry, ImRegion[] searchRegions) {
+    public PosDetector(Telemetry telemetry, ImRegion[] searchRegions) {
         this.telemetry = telemetry;
         this.searchRegions = searchRegions;
     }
@@ -41,10 +41,10 @@ public class PosDetector {
         baseStates = newBaseStates;
     }
 
-    private static final float H_MULT = 1.0f;
-    private static final float S_MULT = 1.0f;
-    private static final float L_MULT = 0f;
-    private static final float MIN_DIFF = 20;
+    private static final float H_MULT = 0.5f;
+    private static final float S_MULT = 2.0f;
+    private static final float L_MULT = 2.0f;
+    private static final float MIN_DIFF = 60;
 
     public int regionOfImage(Bitmap image) {
         if (baseStates == null) throw new IllegalArgumentException();
@@ -52,8 +52,8 @@ public class PosDetector {
         float[][] hsls = new float[searchRegions.length][3];
         for (int r = 0; r < searchRegions.length; r++) {
             float[] hsl = averageHSLInRegion(image, searchRegions[r]);
-//            telemetry.addData("base " + r, hslToStr(baseStates[r]));
-//            telemetry.addData("obs " + r, hslToStr(hsl));
+            telemetry.addData("base " + r, hslToStr(baseStates[r]));
+            telemetry.addData("obs " + r, hslToStr(hsl));
             hsls[r][0] = hsl[0];
             hsls[r][1] = hsl[1];
             hsls[r][2] = hsl[2];
@@ -176,10 +176,10 @@ public class PosDetector {
         return new float[]{h, s * 100, l * 100};
     }
 
-    static class ImRegion {
+    public static class ImRegion {
         float x1, y1, x2, y2;
 
-        ImRegion(float x1, float x2, float y1, float y2) {
+        public ImRegion(float x1, float x2, float y1, float y2) {
             this.x1 = x1;
             this.y1 = y1;
             this.x2 = x2;

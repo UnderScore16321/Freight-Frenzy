@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Bitmap;
 import android.util.Pair;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -18,6 +20,7 @@ public class Hardware {
         initWheels();
         initSpinner();
         initGrabber();
+        initImu();
         if (camera) initCamera();
     }
 
@@ -248,12 +251,83 @@ public class Hardware {
         return grabberOffset;
     }
 
+    // Gyro ----------------------------------------------------------------------------------------
+
+    protected BNO055IMU imu;
+
+    private void initImu() {
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled = false;
+        imu = opMode.hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+    }
+
+    public boolean imuCalibrated() {
+        return imu.isGyroCalibrated();
+    }
+
+    public void waitForImuCalibration(boolean debug) throws InterruptedException {
+        if (debug) {
+            opMode.telemetry.addData("imu", "calibrating");
+            opMode.telemetry.update();
+        }
+        while (!opMode.isStopRequested() && !imuCalibrated()) {
+            Thread.sleep(100);
+        }
+        if (debug) {
+            opMode.telemetry.addData("imu", "calibrated");
+            opMode.telemetry.update();
+        }
+    }
+
+    /**
+     * The robots heading from 0 to 360 degrees in the clockwise direction.
+     */
+    public float robotHeading() {
+        float negToPosHeading = -imu.getAngularOrientation().firstAngle;
+        if (negToPosHeading < 0) negToPosHeading += 360;
+        return negToPosHeading;
+    }
+
     // Camera --------------------------------------------------------------------------------------
 
     protected SimpleCamera camera;
 
     private void initCamera() {
         camera = new SimpleCamera("camera", opMode);
+    }
+
+    public Bitmap getLatestFrame() {
+        if (camera == null) return null;
+        return camera.getLatestFrame();
+    }
+
+    public Bitmap forceGetFrame() throws InterruptedException {
+        if (camera == null) return null;
+        while (true) {
+            Bitmap frame = camera.getLatestFrame();
+            if (frame != null) return frame;
+            Thread.sleep(100);
+        }
+    }
+
+    public boolean isCameraStarted() {
+        return camera.isCameraStarted();
+    }
+
+    public void waitForCameraStart() throws InterruptedException {
+        while (!isCameraStarted()) {
+            Thread.sleep(100);
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    public void close() {
+        if (camera != null) camera.closeCamera();
+        imu.close();
     }
 
 }
