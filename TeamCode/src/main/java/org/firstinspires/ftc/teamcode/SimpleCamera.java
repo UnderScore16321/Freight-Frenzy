@@ -46,6 +46,8 @@ public class SimpleCamera {
 
     private Handler callbackHandler;
 
+    private boolean cameraStarted;
+
     SimpleCamera(String name, LinearOpMode opMode) {
         this.opMode = opMode;
 
@@ -62,6 +64,7 @@ public class SimpleCamera {
         startCamera();
         if (cameraCaptureSession == null) return;
 
+        cameraStarted = true;
         opMode.telemetry.log().add("camera started");
         opMode.telemetry.update();
     }
@@ -70,6 +73,9 @@ public class SimpleCamera {
         return frameQueue.poll();
     }
 
+    public boolean isCameraStarted() {
+        return cameraStarted;
+    }
 
     private void initializeFrameQueue(int capacity) {
         // The frame queue will automatically throw away bitmap frames if they are not processed
