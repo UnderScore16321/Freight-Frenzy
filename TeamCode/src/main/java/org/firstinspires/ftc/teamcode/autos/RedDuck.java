@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.autos;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.TeamHardwareMap;
 
 @Autonomous(name = "[Red Left] Duck Auto", group = "Competition")
+@Disabled
 public class RedDuck extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

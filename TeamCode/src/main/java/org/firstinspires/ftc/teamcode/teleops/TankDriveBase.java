@@ -28,7 +28,7 @@ public class TankDriveBase extends LinearOpMode {
 
             hm.setWheelPower(gamepad1.left_stick_y, gamepad1.right_stick_y);
 
-            hm.setSpinnerPower(Math.max(gamepad2.left_stick_y, 0) * -1);
+            hm.setSpinnerPower(Math.max(-gamepad2.left_stick_y, 0) * -1);
 
             if (grabberOpen.shouldToggle(gamepad2.right_bumper)) {
                 hm.toggleGrabberState();
