@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.autos.AutoHardware;
 
 @TeleOp
+@Disabled
 public class GyroTest extends LinearOpMode {
 
     @Override

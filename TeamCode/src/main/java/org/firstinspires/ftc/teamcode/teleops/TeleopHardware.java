@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Hardware;
-import org.firstinspires.ftc.teamcode.Side;
+import org.firstinspires.ftc.teamcode.utils.Hardware;
+import org.firstinspires.ftc.teamcode.utils.Side;
 
 /**
  * Stores all the hardware for the team robot with an interface geared toward teleops.
@@ -15,26 +14,6 @@ public class TeleopHardware extends Hardware {
     }
 
     // Wheels --------------------------------------------------------------------------------------
-
-    /**
-     * Sets the power of the left and right wheels respectively.
-     * @param left The power of the left wheels.
-     * @param right The power of the right wheels.
-     */
-    public void setWheelPower(double left, double right) {
-        leftFront.setPower(left);
-        leftBack.setPower(left);
-        rightFront.setPower(right);
-        rightBack.setPower(right);
-    }
-
-    /**
-     * Sets all four wheels to the same power.
-     * @param power The power to set the wheels to.
-     */
-    public void setWheelPower(double power) {
-        setWheelPower(power, power);
-    }
 
     private static final double WHEEL_MAX_POWER = 0.75;
 
