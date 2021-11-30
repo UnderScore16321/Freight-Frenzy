@@ -284,7 +284,7 @@ public class Hardware {
     /**
      * The robots heading from 0 to 360 degrees in the clockwise direction.
      */
-    public float robotHeading() {
+    public double robotHeading() {
         float negToPosHeading = -imu.getAngularOrientation().firstAngle;
         if (negToPosHeading < 0) negToPosHeading += 360;
         return negToPosHeading;
