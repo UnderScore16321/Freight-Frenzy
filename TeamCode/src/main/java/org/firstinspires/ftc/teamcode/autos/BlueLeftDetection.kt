@@ -15,22 +15,22 @@ class BlueLeftDetection : DetectionAuto() {
 
     override fun mainOpMode() {
         val level = when (detectedPositionNow()) {
-            0 -> Hardware.GrabberHeight.FIRST_LEVEL
+            0 -> Hardware.GrabberHeight.FIRST_LEVEL // 0 is leftmost is bottom level
             else -> Hardware.GrabberHeight.SECOND_LEVEL
-        } // 0 is leftmost is bottom level
-        printTelemetryData("level", level)
+        }
+        telemetry.printData("level", level)
 
         hw.resetGrabberEncoder()
 
         // deposit preload
         hw.driveInches(24.0)
         hw.grabberHeight = level
-        hw.goToHeading(45.0)
+        hw.turnToHeading(45.0)
         hw.driveInches(5.0)
         hw.grabberIsOpen = true
 
         // park
         hw.driveInches(-5.0)
-        hw.goToHeading(-90.0)
+        hw.turnToHeading(-90.0)
     }
 }

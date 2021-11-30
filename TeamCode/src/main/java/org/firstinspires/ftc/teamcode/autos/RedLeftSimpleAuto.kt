@@ -15,7 +15,7 @@ class RedLeftSimpleAuto : AutoBase() {
 
         // drive to goal
         hw.driveInches(20.0)
-        hw.turnDegrees(35.0)
+        hw.turnToHeading(35.0)
 
         //deposit on goal
         hw.grabberHeight = Hardware.GrabberHeight.FIRST_LEVEL
@@ -24,10 +24,10 @@ class RedLeftSimpleAuto : AutoBase() {
 
         //drive to storage unit
         hw.driveInches(-7.0)
-        hw.turnDegrees(-80.0)
+        hw.turnToHeading(-45.0)
         hw.grabberHeight = Hardware.GrabberHeight.SECOND_LEVEL
         hw.driveInches(19.0)
-        hw.turnDegrees(-40.0)
+        hw.turnToHeading(-90.0)
         hw.driveInches(8.0)
     }
 }
