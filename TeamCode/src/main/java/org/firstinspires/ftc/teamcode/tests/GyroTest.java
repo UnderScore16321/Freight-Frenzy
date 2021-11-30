@@ -27,7 +27,7 @@ public class GyroTest extends LinearOpMode {
 //            heading += 180;
 //            heading = heading % 360;
 //        }
-        hw.goToHeading(90);
-        hw.goToHeading(270);
+        hw.turnToHeading(90);
+        hw.turnToHeading(270);
     }
 }
