@@ -3,8 +3,11 @@ package org.firstinspires.ftc.teamcode.autos
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.util.ElapsedTime
+import com.qualcomm.robotcore.util.Range
+import org.firstinspires.ftc.robotcontroller.external.samples.PushbotAutoDriveByGyro_Linear
 import org.firstinspires.ftc.teamcode.utils.Hardware
 import kotlin.math.abs
+import kotlin.math.max
 
 class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, camera) {
 
@@ -25,22 +28,49 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         rightBack.velocity = speed
     }
 
-    fun driveInches(inches: Double) {
-        setWheelPower(1.0)
+    fun driveInches(inches: Double, speedIn: Double = 1.0) {
+        val speed = abs(speedIn).coerceIn(0.0, 1.0)
+        setWheelPower(speed)
         setAllMotorModes(RunMode.STOP_AND_RESET_ENCODER)
         setAllTargetPosition(inchesToTicks(inches))
         setAllMotorModes(RunMode.RUN_TO_POSITION)
-        waitForEncoders()
+
+        val startAngle = robotHeading()
+        while(!opMode.isStopRequested && isEncoderDriving) {
+            // adjust relative speed based on heading error.
+            val error = headingError(startAngle)
+            var steer = (error * DRIVE_P).coerceIn(-1.0, 1.0)
+
+            // if driving in reverse, the motor correction also needs to be reversed
+            if (inches < 0) steer *= -1.0
+
+            var leftSpeed = (speed - steer).coerceAbs(MIN_DRIVE_SPEED)
+            var rightSpeed = (speed + steer).coerceAbs(MIN_DRIVE_SPEED)
+
+            // Normalize speeds if either one exceeds +/- 1.0;
+            val max = max(abs(leftSpeed), abs(rightSpeed))
+            if (max > 1.0) {
+                leftSpeed /= max
+                rightSpeed /= max
+            }
+
+            setWheelPower(leftSpeed, rightSpeed)
+        }
+
+        setWheelPower(0.0)
     }
 
-    // TURNING: ------------------------------------------------------------------------------------
 
     private fun Double.coerceAbs(min: Double) = when {
         this >= 0 -> this.coerceAtLeast(min)
         else -> this.coerceAtMost(-min)
     }
 
+    // TURNING: ------------------------------------------------------------------------------------
+
     fun turnToHeading(angle: Double) {
+        setAllMotorModes(RunMode.RUN_WITHOUT_ENCODER)
+
         var error = headingError(angle)
 
         val totalTime = ElapsedTime()
@@ -58,14 +88,13 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
             opMode.telemetry.update()
             println("${totalTime.seconds()}, $error")
 
-            val power = (P * error + I * integralSum + D * derivative).coerceAbs(MIN_TURN_SPEED)
+            val power = (TURN_P * error + TURN_I * integralSum + TURN_D * derivative).coerceAbs(MIN_TURN_SPEED)
             setWheelPower(power, -power)
 
             lastError = error
             loopTime.reset()
         }
         setWheelPower(0.0)
-        Thread.sleep(300)
     }
 
     private fun headingError(toAngle: Double): Double {
@@ -83,12 +112,6 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
 
     val isEncoderDriving: Boolean
         get() = leftBack.isBusy || leftFront.isBusy || rightBack.isBusy || rightFront.isBusy
-
-    fun waitForEncoders() {
-        while (isEncoderDriving) {
-            Thread.sleep(100)
-        }
-    }
 
     private fun inchesToTicks(inches: Double): Int {
         return (inches * TICKS_PER_INCH).toInt()
@@ -131,9 +154,12 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         private const val INCHES_PER_ROT = 3.14159 * WHEEL_DIAMETER
         private const val TICKS_PER_INCH = TICKS_PER_ROT / INCHES_PER_ROT
 
-        private const val P = 0.06
-        private const val I = 0.001
-        private const val D = 0.002
+        private const val DRIVE_P = 0.06
+        private const val MIN_DRIVE_SPEED = 0.3
+
+        private const val TURN_P = 0.06
+        private const val TURN_I = 0.001
+        private const val TURN_D = 0.002
         private const val MIN_TURN_SPEED = 0.3
         private const val TURN_TOLERANCE = 0.5
 
