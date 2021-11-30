@@ -1,9 +1,7 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-
-import com.google.gson.internal.$Gson$Preconditions;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 

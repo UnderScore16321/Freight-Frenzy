@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.Hardware;
+import org.firstinspires.ftc.teamcode.utils.Hardware;
 
 public class AutoHardware extends Hardware {
     public AutoHardware(LinearOpMode opMode, boolean camera) throws InterruptedException {

@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.autos;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.PosDetector;
+import org.firstinspires.ftc.teamcode.utils.PosDetector;
 
 public class PosDetectorFactory {
     public static PosDetector blueLeft(Telemetry telemetry) {
