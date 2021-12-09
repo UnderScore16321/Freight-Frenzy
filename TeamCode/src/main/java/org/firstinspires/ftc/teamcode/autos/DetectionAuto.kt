@@ -4,13 +4,14 @@ import org.firstinspires.ftc.teamcode.utils.PosDetector
 
 abstract class DetectionAuto : AutoBase() {
 
-    private lateinit var posDetector: PosDetector
+    protected lateinit var posDetector: PosDetector
 
     abstract fun getNewPosDetector(): PosDetector
 
     override fun getNewHardware() = AutoHardware(this, true)
 
     override fun beforeStart() {
+        super.beforeStart()
         telemetry.clearAll()
         telemetry.printData("status", "camera initializing")
         posDetector = getNewPosDetector()

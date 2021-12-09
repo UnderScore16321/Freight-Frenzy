@@ -30,17 +30,4 @@ public class TeleopHardware extends Hardware {
         setWheelPower(adjustedLeft, adjustedRight);
     }
 
-    // Spinner -------------------------------------------------------------------------------------
-
-    private static final double SPINNER_MAX_POWER = 0.5;
-
-    /**
-     * Sets the spinner to spin at a percentage of max speed for the given side.
-     * @param power The percentage of max speed.
-     * @param side The side we are trying to spin.
-     */
-    public void setSpinnerPower(double power, Side side) {
-        spinner.setPower(power * SPINNER_MAX_POWER * (side == Side.RED ? -1 : 1));
-    }
-
 }

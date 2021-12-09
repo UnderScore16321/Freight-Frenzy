@@ -8,7 +8,7 @@ abstract class TankDriveBase : TeleopBase() {
     abstract val side: Side
 
     override fun beforeStart() {
-        hw.grabberIsOpen = false
+        hw.grabberIsOpen = true
     }
 
     override fun mainOpMode() {

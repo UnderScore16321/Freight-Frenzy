@@ -13,6 +13,7 @@ public class PosDetector {
 
     private final ImRegion[] searchRegions;
     private float[][] baseStates;
+    private List<Bitmap> baseImages;
     private Telemetry telemetry;
 
     public PosDetector(Telemetry telemetry, ImRegion[] searchRegions) {
@@ -21,6 +22,7 @@ public class PosDetector {
     }
 
     public void useBaseStates(List<Bitmap> baseStateImages) {
+        baseImages = baseStateImages;
         float[][] newBaseStates = new float[searchRegions.length][3];
         for (int r = 0; r < searchRegions.length; r++) {
             List<Float> hs = new ArrayList<>();
@@ -74,6 +76,16 @@ public class PosDetector {
             }
         }
         return diffLoc;
+    }
+
+    public float allImageDiff(Bitmap current) {
+        float[] baseHSL = averageHSLInRegion(baseImages.get(0), ImRegion.FULL_IMAGE);
+        float[] currentHSL = averageHSLInRegion(current, ImRegion.FULL_IMAGE);
+
+        float hDiff = diffBetweenHs(baseHSL[0], currentHSL[0]);
+        float sDiff = Math.abs(baseHSL[1] - currentHSL[1]);
+        float lDiff = Math.abs(baseHSL[2] - currentHSL[2]);
+        return hDiff * H_MULT + sDiff * S_MULT + lDiff * L_MULT;
     }
 
     private float averageOfHs(List<Float> hs) {
@@ -175,6 +187,8 @@ public class PosDetector {
     }
 
     public static class ImRegion {
+        public static final ImRegion FULL_IMAGE = new ImRegion(0f, 1.0f, 0f, 1.0f);
+
         float x1, y1, x2, y2;
 
         public ImRegion(float x1, float x2, float y1, float y2) {

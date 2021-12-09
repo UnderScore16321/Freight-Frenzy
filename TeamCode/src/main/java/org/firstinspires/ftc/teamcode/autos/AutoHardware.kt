@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.autos
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.util.ElapsedTime
 import com.qualcomm.robotcore.util.Range
@@ -17,6 +18,11 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         leftBack.targetPositionTolerance = 15
         rightFront.targetPositionTolerance = 15
         rightBack.targetPositionTolerance = 15
+
+        leftFront.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        leftBack.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        rightFront.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        rightBack.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
     }
 
     fun setVelocity(speed: Double) {
@@ -28,7 +34,7 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         rightBack.velocity = speed
     }
 
-    fun driveInches(inches: Double, speedIn: Double = 1.0) {
+    fun driveInches(inches: Double, speedIn: Double = 0.75) {
         val speed = abs(speedIn).coerceIn(0.0, 1.0)
         setWheelPower(speed)
         setAllMotorModes(RunMode.STOP_AND_RESET_ENCODER)
@@ -36,7 +42,7 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         setAllMotorModes(RunMode.RUN_TO_POSITION)
 
         val startAngle = robotHeading()
-        while(!opMode.isStopRequested && isEncoderDriving) {
+        while (!opMode.isStopRequested && anyMotorBusy) {
             // adjust relative speed based on heading error.
             val error = headingError(startAngle)
             var steer = (error * DRIVE_P).coerceIn(-1.0, 1.0)
@@ -44,8 +50,8 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
             // if driving in reverse, the motor correction also needs to be reversed
             if (inches < 0) steer *= -1.0
 
-            var leftSpeed = (speed - steer).coerceAbs(MIN_DRIVE_SPEED)
-            var rightSpeed = (speed + steer).coerceAbs(MIN_DRIVE_SPEED)
+            var leftSpeed = (speed + steer).coerceAbs(MIN_DRIVE_SPEED)
+            var rightSpeed = (speed - steer).coerceAbs(MIN_DRIVE_SPEED)
 
             // Normalize speeds if either one exceeds +/- 1.0;
             val max = max(abs(leftSpeed), abs(rightSpeed))
@@ -57,7 +63,9 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
             setWheelPower(leftSpeed, rightSpeed)
         }
 
+        setAllMotorModes(RunMode.RUN_WITHOUT_ENCODER)
         setWheelPower(0.0)
+        Thread.sleep(500)
     }
 
 
@@ -88,7 +96,9 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
             opMode.telemetry.update()
             println("${totalTime.seconds()}, $error")
 
-            val power = (TURN_P * error + TURN_I * integralSum + TURN_D * derivative).coerceAbs(MIN_TURN_SPEED)
+            val power = (TURN_P * error + TURN_I * integralSum + TURN_D * derivative).coerceAbs(
+                MIN_TURN_SPEED
+            )
             setWheelPower(power, -power)
 
             lastError = error
@@ -112,6 +122,9 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
 
     val isEncoderDriving: Boolean
         get() = leftBack.isBusy || leftFront.isBusy || rightBack.isBusy || rightFront.isBusy
+
+    val anyMotorBusy: Boolean
+        get() = leftBack.isBusy && leftFront.isBusy && rightBack.isBusy && rightFront.isBusy
 
     private fun inchesToTicks(inches: Double): Int {
         return (inches * TICKS_PER_INCH).toInt()
@@ -154,7 +167,7 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         private const val INCHES_PER_ROT = 3.14159 * WHEEL_DIAMETER
         private const val TICKS_PER_INCH = TICKS_PER_ROT / INCHES_PER_ROT
 
-        private const val DRIVE_P = 0.06
+        private const val DRIVE_P = 0.03
         private const val MIN_DRIVE_SPEED = 0.3
 
         private const val TURN_P = 0.06
