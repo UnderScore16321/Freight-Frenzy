@@ -73,6 +73,18 @@ public class Hardware {
         spinner = opMode.hardwareMap.dcMotor.get("spinner");
     }
 
+    private static final double SPINNER_MAX_POWER = 0.5;
+
+    /**
+     * Sets the spinner to spin at a percentage of max speed for the given side.
+     * @param power The percentage of max speed.
+     * @param side The side we are trying to spin.
+     */
+    public void setSpinnerPower(double power, Side side) {
+        spinner.setPower(power * SPINNER_MAX_POWER * (side == Side.RED ? -1 : 1));
+    }
+
+
     // Grabber -------------------------------------------------------------------------------------
 
     protected DcMotor grabberMotor;
@@ -110,10 +122,10 @@ public class Hardware {
 
     private boolean grabberIsOpen = false;
 
-    private static final double RIGHT_CLOSED = 0.62;
-    private static final double RIGHT_OPEN = 0.5;
-    private static final double LEFT_CLOSED = 0.78;
-    private static final double LEFT_OPEN = 0.9;
+    private static final double RIGHT_CLOSED = 0.47;
+    private static final double RIGHT_OPEN = 0.35;
+    private static final double LEFT_CLOSED = 0.1;
+    private static final double LEFT_OPEN = 0.22;
 
     /**
      * Opens and closes the grabber.
@@ -149,7 +161,9 @@ public class Hardware {
      * A height that the grabber can be set at.
      */
     public enum GrabberHeight {
-        SECOND_LEVEL(280),
+        STOWED(580),
+        THIRD_LEVEL(370),
+        SECOND_LEVEL(200),
         FIRST_LEVEL(100),
         DOWN(0);
 
@@ -170,26 +184,20 @@ public class Hardware {
          * The GrabberHeight above this one. If there is no height above it returns this.
          */
         public GrabberHeight above() {
-            if (this == SECOND_LEVEL) {
-                return SECOND_LEVEL;
-            } else if (this == FIRST_LEVEL) {
-                return SECOND_LEVEL;
-            } else {
-                return FIRST_LEVEL;
-            }
+            if (this == THIRD_LEVEL) return THIRD_LEVEL;
+            if (this == SECOND_LEVEL) return THIRD_LEVEL;
+            if (this == FIRST_LEVEL) return SECOND_LEVEL;
+            return FIRST_LEVEL;
         }
 
         /**
          * The GrabberHeight below this one. If there is no height below it returns this.
          */
         public GrabberHeight below() {
-            if (this == SECOND_LEVEL) {
-                return FIRST_LEVEL;
-            } else if (this == FIRST_LEVEL) {
-                return DOWN;
-            } else {
-                return DOWN;
-            }
+            if (this == THIRD_LEVEL) return SECOND_LEVEL;
+            if (this == SECOND_LEVEL) return FIRST_LEVEL;
+            if (this == FIRST_LEVEL) return DOWN;
+            return DOWN;
         }
     }
 
@@ -326,7 +334,6 @@ public class Hardware {
 
     public void close() {
         if (camera != null) camera.closeCamera();
-        imu.close();
     }
 
 }

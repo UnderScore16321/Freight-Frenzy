@@ -6,7 +6,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 /**
  * A base class for opmodes. It provides access to a [Hardware] and [AdvancedGamepad]s.
  */
-abstract class BaseOpMode<HardwareType: Hardware> : LinearOpMode() {
+abstract class BaseOpMode<HardwareType : Hardware> : LinearOpMode() {
+    protected var startDelay = 0L
+        set(value) {
+            field = value.coerceAtLeast(0)
+        }
+
     protected lateinit var hw: HardwareType private set
     protected lateinit var aGamepad1: AdvancedGamepad private set
     protected lateinit var aGamepad2: AdvancedGamepad private set
@@ -19,7 +24,9 @@ abstract class BaseOpMode<HardwareType: Hardware> : LinearOpMode() {
         hw = getNewHardware()
         beforeStart()
         waitForStart()
+        sleep(startDelay)
         mainOpMode()
+        hw.close()
     }
 
     protected open fun beforeStart() {}

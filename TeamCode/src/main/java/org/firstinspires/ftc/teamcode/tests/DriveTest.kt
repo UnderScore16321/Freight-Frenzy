@@ -6,10 +6,9 @@ import org.firstinspires.ftc.teamcode.autos.AutoBase
 
 @Autonomous
 @Disabled
-class TurnTest : AutoBase() {
+class DriveTest : AutoBase() {
     override fun mainOpMode() {
-        hw.waitForImuCalibration(false)
-
-        hw.turnToHeading(90.0)
+        hw.driveInches(48.0, 1.0)
+        sleep(1000)
     }
 }

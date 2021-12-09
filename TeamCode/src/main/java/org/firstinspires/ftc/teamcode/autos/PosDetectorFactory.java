@@ -10,4 +10,11 @@ public class PosDetectorFactory {
                 new PosDetector.ImRegion(0.75f, 1.0f, 0, 0.33f),
         });
     }
+
+    public static PosDetector blueRight(Telemetry telemetry) {
+        return new PosDetector(telemetry, new PosDetector.ImRegion[]{
+                new PosDetector.ImRegion(0.5f, 0.75f, 0, 0.25f),
+                new PosDetector.ImRegion(0.25f, 0.5f, 0, 0.25f),
+        });
+    }
 }
