@@ -34,7 +34,7 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         rightBack.velocity = speed
     }
 
-    fun driveInches(inches: Double, speedIn: Double = 0.75) {
+    fun driveInches(inches: Double, speedIn: Double = 0.6) {
         val speed = abs(speedIn).coerceIn(0.0, 1.0)
         setWheelPower(speed)
         setAllMotorModes(RunMode.STOP_AND_RESET_ENCODER)
@@ -149,8 +149,14 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
     }
 
     // Grabber -------------------------------------------------------------------------------------
+
     override fun setGrabberIsOpen(isOpen: Boolean) {
         super.setGrabberIsOpen(isOpen)
+        Thread.sleep(300)
+    }
+
+    override fun stowGrabbers() {
+        super.stowGrabbers()
         Thread.sleep(300)
     }
 
@@ -167,10 +173,10 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         private const val INCHES_PER_ROT = 3.14159 * WHEEL_DIAMETER
         private const val TICKS_PER_INCH = TICKS_PER_ROT / INCHES_PER_ROT
 
-        private const val DRIVE_P = 0.03
+        private const val DRIVE_P = 0.02
         private const val MIN_DRIVE_SPEED = 0.3
 
-        private const val TURN_P = 0.06
+        private const val TURN_P = 0.05
         private const val TURN_I = 0.001
         private const val TURN_D = 0.002
         private const val MIN_TURN_SPEED = 0.3
