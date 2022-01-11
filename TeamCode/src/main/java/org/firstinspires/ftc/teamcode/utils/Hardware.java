@@ -73,7 +73,7 @@ public class Hardware {
         spinner = opMode.hardwareMap.dcMotor.get("spinner");
     }
 
-    private static final double SPINNER_MAX_POWER = 0.5;
+    private static final double SPINNER_MAX_POWER = 0.7;
 
     /**
      * Sets the spinner to spin at a percentage of max speed for the given side.
@@ -98,6 +98,7 @@ public class Hardware {
         grabberMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         grabberMotor.setPower(1);
         setGrabberHeight(GrabberHeight.DOWN);
+        grabberMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         grabberMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
@@ -122,10 +123,12 @@ public class Hardware {
 
     private boolean grabberIsOpen = false;
 
-    private static final double RIGHT_CLOSED = 0.47;
-    private static final double RIGHT_OPEN = 0.35;
+    private static final double RIGHT_CLOSED = 0.92;
+    private static final double RIGHT_OPEN = 0.76;
+    private static final double RIGHT_STOWED = 0.6;
     private static final double LEFT_CLOSED = 0.1;
-    private static final double LEFT_OPEN = 0.22;
+    private static final double LEFT_OPEN = 0.27;
+    private static final double LEFT_STOWED = 0.5;
 
     /**
      * Opens and closes the grabber.
@@ -141,6 +144,11 @@ public class Hardware {
             leftGrabber.setPosition(LEFT_CLOSED);
             rightGrabber.setPosition(RIGHT_CLOSED);
         }
+    }
+
+    public void stowGrabbers() {
+        leftGrabber.setPosition(LEFT_STOWED);
+        rightGrabber.setPosition(RIGHT_STOWED);
     }
 
     /**
@@ -162,9 +170,9 @@ public class Hardware {
      */
     public enum GrabberHeight {
         STOWED(580),
-        THIRD_LEVEL(370),
-        SECOND_LEVEL(200),
-        FIRST_LEVEL(100),
+        THIRD_LEVEL(400),
+        SECOND_LEVEL(245),
+        FIRST_LEVEL(120),
         DOWN(0);
 
         private final int inTicks;

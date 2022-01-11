@@ -19,7 +19,7 @@ abstract class TankDriveBase : TeleopBase() {
             hw.setAdjustedWheelPower(aGamepad1.leftY, aGamepad1.rightY)
 
             // duck spinner
-            hw.setSpinnerPower(aGamepad1.leftY.coerceAtLeast(0.0) , side)
+            hw.setSpinnerPower(aGamepad2.leftY.coerceAtLeast(0.0) , side)
 
             // grabber
             if (aGamepad2.rightBumperPressed) hw.toggleGrabberState()
