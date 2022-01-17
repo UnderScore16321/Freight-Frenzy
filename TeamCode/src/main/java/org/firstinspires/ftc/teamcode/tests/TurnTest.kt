@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import org.firstinspires.ftc.teamcode.autos.AutoBase
 
 @Autonomous
-@Disabled
 class TurnTest : AutoBase() {
     override fun mainOpMode() {
         hw.waitForImuCalibration(false)

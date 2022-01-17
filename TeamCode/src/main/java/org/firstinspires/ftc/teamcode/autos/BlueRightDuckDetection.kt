@@ -17,7 +17,7 @@ class BlueRightDuckDetection : DetectionAuto() {
     override fun mainOpMode() {
         hw.grabberIsOpen = false
 
-        val level: Hardware.GrabberHeight = when (detectedPositionNow()) {
+        val level = when (detectedPositionNow()) {
             0 -> Hardware.GrabberHeight.FIRST_LEVEL
             1 -> Hardware.GrabberHeight.SECOND_LEVEL
             else -> Hardware.GrabberHeight.THIRD_LEVEL
@@ -35,16 +35,19 @@ class BlueRightDuckDetection : DetectionAuto() {
         hw.grabberIsOpen = true
 
         // drive to duck
-        hw.driveInches(-36.0)
+        hw.driveInches(-6.0)
+        hw.turnToHeading(0.0)
+        hw.driveInches(-48.0)
+        hw.driveInches(5.0)
         hw.grabberHeight = Hardware.GrabberHeight.DOWN
 
-        hw.turnToHeading(0.0)
-        hw.driveInches(-39.0)
+        hw.turnToHeading(-90.0)
+        hw.driveInches(-23.0)
         hw.turnToHeading(-45.0)
         hw.driveInches(-3.0, speedIn = 0.4)
 
         // spin duck
-        hw.setSpinnerPower(1.0, Side.BLUE)
+        hw.setSpinnerPower(0.6, Side.BLUE)
         sleep(5000)
         hw.setSpinnerPower(0.0, Side.BLUE)
 

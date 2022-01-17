@@ -35,16 +35,18 @@ class RedLeftDuckDetection : DetectionAuto() {
         hw.grabberIsOpen = true
 
         // drive to duck
-        hw.driveInches(-36.0)
+        hw.driveInches(-6.0)
+        hw.turnToHeading(0.0)
+        hw.driveInches(-45.0)
         hw.grabberHeight = Hardware.GrabberHeight.DOWN
 
-        hw.turnToHeading(0.0)
-        hw.driveInches(-42.0)
+        hw.turnToHeading(90.0)
+        hw.driveInches(-23.0)
         hw.turnToHeading(45.0)
         hw.driveInches(-3.0, speedIn = 0.4)
 
         // spin duck
-        hw.setSpinnerPower(1.0, Side.RED)
+        hw.setSpinnerPower(0.6, Side.RED)
         sleep(5000)
         hw.setSpinnerPower(0.0, Side.RED)
 

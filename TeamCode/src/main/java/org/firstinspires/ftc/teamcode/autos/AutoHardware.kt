@@ -87,7 +87,7 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         var lastError = 0.0
         var integralSum = 0.0
 
-        while (!opMode.isStopRequested && abs(error) > TURN_TOLERANCE) {
+        while (!opMode.isStopRequested && (abs(error) > TURN_TOLERANCE || !wheelsAreStopped())) {
             error = headingError(angle)
             val derivative = (error - lastError) / loopTime.seconds()
             integralSum += error * loopTime.seconds()
@@ -106,6 +106,12 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         }
         setWheelPower(0.0)
     }
+
+    private fun wheelsAreStopped(): Boolean =
+        leftFront.velocity < 50.0 &&
+                leftBack.velocity < 50.0 &&
+                rightFront.velocity < 50.0 &&
+                rightBack.velocity < 50.0
 
     private fun headingError(toAngle: Double): Double {
         return normalizeHeading(toAngle - robotHeading())
@@ -177,8 +183,8 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         private const val MIN_DRIVE_SPEED = 0.3
 
         private const val TURN_P = 0.05
-        private const val TURN_I = 0.001
-        private const val TURN_D = 0.002
+        private const val TURN_I = 0.0004
+        private const val TURN_D = 0.0017
         private const val MIN_TURN_SPEED = 0.3
         private const val TURN_TOLERANCE = 0.5
 
