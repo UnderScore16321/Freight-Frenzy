@@ -18,28 +18,35 @@ class BlueLeftDetection : DetectionAuto() {
         hw.grabberIsOpen = false
 
         val level = when (detectedPositionNow()) {
-            0 -> Hardware.GrabberHeight.FIRST_LEVEL
+            0 -> Hardware.GrabberHeight.THIRD_LEVEL
             1 -> Hardware.GrabberHeight.SECOND_LEVEL
-            else -> Hardware.GrabberHeight.THIRD_LEVEL
+            else -> Hardware.GrabberHeight.FIRST_LEVEL
         }
         telemetry.printData("level", level)
 
         hw.resetGrabberEncoder()
 
         // deposit preload
-        hw.turnToHeading(-10.0)
-        hw.driveInches(39.0)
-        hw.grabberHeight = level
-        hw.turnToHeading(90.0)
-        hw.driveInches(3.0)
+        hw.driveInches(20.0)
+        if (level == Hardware.GrabberHeight.THIRD_LEVEL) {
+            hw.driveInches(20.0)
+            hw.driveInches(-20.0)
+            hw.turnToHeading(45.0)
+            hw.grabberHeight = level
+        } else {
+            hw.turnToHeading(45.0)
+            hw.grabberHeight = level
+        }
+
+        hw.driveInches(7.0)
         hw.grabberIsOpen = true
 
-        // park
-        hw.driveInches(-5.0)
+        //park
+        hw.driveInches(-7.0)
         hw.turnToHeading(0.0)
-        hw.driveInches(-30.0)
-        hw.turnToHeading(-90.0)
+        hw.driveInches(-10.0)
         hw.grabberHeight = Hardware.GrabberHeight.FIRST_LEVEL
-        hw.driveInches(35.0)
+        hw.turnToHeading(-90.0)
+        hw.driveInches(45.0)
     }
 }

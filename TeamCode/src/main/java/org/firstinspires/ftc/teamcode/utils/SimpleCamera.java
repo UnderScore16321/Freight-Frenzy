@@ -48,7 +48,7 @@ public class SimpleCamera {
 
     private boolean cameraStarted;
 
-    SimpleCamera(String name, LinearOpMode opMode) {
+    public SimpleCamera(String name, LinearOpMode opMode) {
         this.opMode = opMode;
 
         callbackHandler = CallbackLooper.getDefault().getHandler();
