@@ -23,6 +23,8 @@ abstract class TankDriveBase : TeleopBase() {
 
             // grabber
             if (aGamepad2.rightBumperPressed) hw.toggleGrabberState()
+            if (aGamepad2.leftBumperPressed) hw.stowGrabbers()
+
             if (aGamepad2.dpadUpPressed) hw.raiseGrabberHeight()
             if (aGamepad2.dpadDownPressed) hw.lowerGrabberHeight()
             hw.grabberOffset = (aGamepad2.leftTrigger * 50).toInt()
