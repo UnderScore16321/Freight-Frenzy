@@ -31,10 +31,10 @@ public class Hardware {
     protected DcMotorEx rightBack;
 
     private void initWheels() {
-        leftFront = (DcMotorEx) opMode.hardwareMap.dcMotor.get("left front");
-        leftBack = (DcMotorEx) opMode.hardwareMap.dcMotor.get("left back");
-        rightFront = (DcMotorEx) opMode.hardwareMap.dcMotor.get("right front");
-        rightBack = (DcMotorEx) opMode.hardwareMap.dcMotor.get("right back");
+        leftFront = (DcMotorEx) opMode.hardwareMap.dcMotor.get("front_left");
+        leftBack = (DcMotorEx) opMode.hardwareMap.dcMotor.get("back_left");
+        rightFront = (DcMotorEx) opMode.hardwareMap.dcMotor.get("front_right");
+        rightBack = (DcMotorEx) opMode.hardwareMap.dcMotor.get("back_right");
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
     }
@@ -70,7 +70,7 @@ public class Hardware {
     protected DcMotor spinner;
 
     private void initSpinner() {
-        spinner = opMode.hardwareMap.dcMotor.get("spinner");
+        spinner = opMode.hardwareMap.dcMotor.get("duck_spinner");
     }
 
     private static final double SPINNER_MAX_POWER = 0.7;
@@ -92,9 +92,9 @@ public class Hardware {
     protected Servo rightGrabber;
 
     private void initGrabber() throws InterruptedException {
-        leftGrabber = opMode.hardwareMap.servo.get("left grabber");
-        rightGrabber = opMode.hardwareMap.servo.get("right grabber");
-        grabberMotor = opMode.hardwareMap.dcMotor.get("grabber motor");
+        leftGrabber = opMode.hardwareMap.servo.get("left_grabber");
+        rightGrabber = opMode.hardwareMap.servo.get("right_grabber");
+        grabberMotor = opMode.hardwareMap.dcMotor.get("arm");
         grabberMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         grabberMotor.setPower(1);
         setGrabberHeight(GrabberHeight.DOWN);
@@ -123,11 +123,11 @@ public class Hardware {
 
     private boolean grabberIsOpen = false;
 
-    private static final double RIGHT_CLOSED = 0.92;
-    private static final double RIGHT_OPEN = 0.76;
-    private static final double RIGHT_STOWED = 0.6;
-    private static final double LEFT_CLOSED = 0.1;
-    private static final double LEFT_OPEN = 0.27;
+    private static final double RIGHT_CLOSED = 0.78;
+    private static final double RIGHT_OPEN = 0.65;
+    private static final double RIGHT_STOWED = 0.9;
+    private static final double LEFT_CLOSED = 0.62;
+    private static final double LEFT_OPEN = 0.75;
     private static final double LEFT_STOWED = 0.5;
 
     /**
