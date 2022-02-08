@@ -4,8 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.util.ElapsedTime
-import com.qualcomm.robotcore.util.Range
-import org.firstinspires.ftc.robotcontroller.external.samples.PushbotAutoDriveByGyro_Linear
 import org.firstinspires.ftc.teamcode.utils.Hardware
 import kotlin.math.abs
 import kotlin.math.max
@@ -50,8 +48,8 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
             // if driving in reverse, the motor correction also needs to be reversed
             if (inches < 0) steer *= -1.0
 
-            var leftSpeed = (speed + steer).coerceAbs(MIN_DRIVE_SPEED)
-            var rightSpeed = (speed - steer).coerceAbs(MIN_DRIVE_SPEED)
+            var leftSpeed = (speed + steer).addToAbs(MIN_DRIVE_SPEED)
+            var rightSpeed = (speed - steer).addToAbs(MIN_DRIVE_SPEED)
 
             // Normalize speeds if either one exceeds +/- 1.0;
             val max = max(abs(leftSpeed), abs(rightSpeed))
@@ -65,13 +63,14 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
 
         setAllMotorModes(RunMode.RUN_WITHOUT_ENCODER)
         setWheelPower(0.0)
+        turnToHeading(startAngle)
         Thread.sleep(500)
     }
 
 
-    private fun Double.coerceAbs(min: Double) = when {
-        this >= 0 -> this.coerceAtLeast(min)
-        else -> this.coerceAtMost(-min)
+    private fun Double.addToAbs(min: Double) = when {
+        this >= 0 -> this + min
+        else -> this - min
     }
 
     // TURNING: ------------------------------------------------------------------------------------
@@ -96,9 +95,9 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
             opMode.telemetry.update()
             println("${totalTime.seconds()}, $error")
 
-            val power = (TURN_P * error + TURN_I * integralSum + TURN_D * derivative).coerceAbs(
+            val power = (TURN_P * error + TURN_I * integralSum + TURN_D * derivative).addToAbs(
                 MIN_TURN_SPEED
-            )
+            ) * 0.8
             setWheelPower(power, -power)
 
             lastError = error
@@ -158,12 +157,12 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
 
     override fun setGrabberIsOpen(isOpen: Boolean) {
         super.setGrabberIsOpen(isOpen)
-        Thread.sleep(300)
+        Thread.sleep(700)
     }
 
     override fun stowGrabbers() {
         super.stowGrabbers()
-        Thread.sleep(300)
+        Thread.sleep(700)
     }
 
     override fun setGrabberTargetPosition() {
@@ -182,10 +181,12 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         private const val DRIVE_P = 0.02
         private const val MIN_DRIVE_SPEED = 0.3
 
-        private const val TURN_P = 0.05
-        private const val TURN_I = 0.0004
-        private const val TURN_D = 0.0017
-        private const val MIN_TURN_SPEED = 0.3
+        private const val TURN_P = 0.04
+//        private const val TURN_I = 0.0004
+//        private const val TURN_D = 0.0025
+        private const val TURN_I = 0
+        private const val TURN_D = 0.001
+        private const val MIN_TURN_SPEED = 0.2
         private const val TURN_TOLERANCE = 0.5
 
     }

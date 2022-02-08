@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.tests
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.teleops.TeleopBase
 import org.firstinspires.ftc.teamcode.utils.Side
 
-@TeleOp(group = "Test")
+@TeleOp
+//@Disabled
 class DuckSpinnerSpeedTest : TeleopBase() {
     override fun mainOpMode() {
         var speed = 0.5
@@ -13,7 +15,11 @@ class DuckSpinnerSpeedTest : TeleopBase() {
             telemetry.clearAll()
             telemetry.addData("Speed", speed)
             telemetry.update()
-            hw.setSpinnerPower(speed, Side.RED)
+            if (gamepad1.x) {
+                hw.setSpinnerPower(speed, Side.RED)
+            } else {
+                hw.setSpinnerPower(0.0, Side.RED)
+            }
 
             when {
                 aGamepad1.dpadUpPressed -> speed += .1

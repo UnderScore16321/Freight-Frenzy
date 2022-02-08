@@ -16,18 +16,25 @@ abstract class TankDriveBase : TeleopBase() {
             if (aGamepad2.x) hw.resetGrabberEncoder()
 
             // drive
-            hw.setAdjustedWheelPower(aGamepad1.leftY, aGamepad1.rightY)
+            if (aGamepad1.leftBumper) {
+                hw.setAdjustedWheelPower(1.0 + aGamepad1.rightTrigger, 1.0 + aGamepad1.rightTrigger)
+            } else if (aGamepad1.rightBumper) {
+                hw.setAdjustedWheelPower(-1.0, -1.0)
+            } else {
+                hw.setAdjustedWheelPower(aGamepad1.leftY, aGamepad1.rightY)
+            }
 
             // duck spinner
-            hw.setSpinnerPower(aGamepad2.leftY.coerceAtLeast(0.0) , side)
+            hw.setSpinnerPower(if (aGamepad2.leftBumper) 0.88 else 0.0 , side)
 
             // grabber
             if (aGamepad2.rightBumperPressed) hw.toggleGrabberState()
-            if (aGamepad2.leftBumperPressed) hw.stowGrabbers()
+//            if (aGamepad2.leftBumperPressed) hw.stowGrabbers()
 
             if (aGamepad2.dpadUpPressed) hw.raiseGrabberHeight()
             if (aGamepad2.dpadDownPressed) hw.lowerGrabberHeight()
-            hw.grabberOffset = (aGamepad2.leftTrigger * 50).toInt()
+            hw.grabberOffset = -(aGamepad2.leftTrigger * 50).toInt()
+            hw.grabberOffset += (aGamepad2.rightTrigger * 50).toInt()
         }
     }
 

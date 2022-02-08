@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.tests
 
 import android.graphics.Bitmap
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.autos.PosDetectorFactory
 import org.firstinspires.ftc.teamcode.teleops.TeleopBase
 import org.firstinspires.ftc.teamcode.utils.SimpleCamera
 
-@TeleOp(group = "Test")
+@TeleOp
+@Disabled
 class CameraTest : TeleopBase() {
     override fun mainOpMode() {
         val camera = SimpleCamera("camera",this)
