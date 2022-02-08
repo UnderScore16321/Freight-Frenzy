@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.utils.PosDetector
 import org.firstinspires.ftc.teamcode.autos.PosDetectorFactory
 
 @TeleOp
-//@Disabled
+@Disabled
 class VisionTest : DetectionAuto() {
     override fun getNewPosDetector(): PosDetector {
         return PosDetectorFactory.blueRight(telemetry)
