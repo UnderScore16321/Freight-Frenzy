@@ -68,14 +68,15 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
     }
 
 
-    private fun Double.addToAbs(min: Double) = when {
-        this >= 0 -> this + min
-        else -> this - min
+    private fun Double.addToAbs(min: Double, max: Double = 1.0) = when {
+        this >= 0 -> (this + min).coerceAtMost(max)
+        else -> (this - min).coerceAtLeast(-max)
     }
 
     // TURNING: ------------------------------------------------------------------------------------
 
     fun turnToHeading(angle: Double) {
+        var time = ElapsedTime()
         setAllMotorModes(RunMode.RUN_WITHOUT_ENCODER)
 
         var error = headingError(angle)
@@ -86,8 +87,9 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         var lastError = 0.0
         var integralSum = 0.0
 
-        while (!opMode.isStopRequested && (abs(error) > TURN_TOLERANCE || !wheelsAreStopped())) {
+        while ((time.milliseconds() < 1000) && !opMode.isStopRequested && (abs(error) > TURN_TOLERANCE || !wheelsAreStopped())) {
             error = headingError(angle)
+            if (error > 5 || error < -5) time = ElapsedTime()
             val derivative = (error - lastError) / loopTime.seconds()
             integralSum += error * loopTime.seconds()
 
@@ -96,7 +98,7 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
             println("${totalTime.seconds()}, $error")
 
             val power = (TURN_P * error + TURN_I * integralSum + TURN_D * derivative).addToAbs(
-                MIN_TURN_SPEED
+                MIN_TURN_SPEED, MAX_TURN_SPEED
             ) * 0.8
             setWheelPower(power, -power)
 
@@ -187,7 +189,8 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         private const val TURN_I = 0
         private const val TURN_D = 0.001
         private const val MIN_TURN_SPEED = 0.2
-        private const val TURN_TOLERANCE = 0.5
+        private const val MAX_TURN_SPEED = 0.4
+        private const val TURN_TOLERANCE = 1.0
 
     }
 
