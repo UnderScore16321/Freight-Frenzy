@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.utils.PosDetector
 
 @Autonomous
 class DetectionTest: DetectionAuto() {
-    override fun getNewPosDetector(): PosDetector = PosDetectorFactory.blueLeft(telemetry)
+    override fun getNewPosDetector(): PosDetector = PosDetectorFactory.redRight(telemetry)
 
     override fun mainOpMode() {
         while(!isStopRequested) {

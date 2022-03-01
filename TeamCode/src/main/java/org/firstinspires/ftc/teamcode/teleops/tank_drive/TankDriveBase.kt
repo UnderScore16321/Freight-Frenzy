@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.teleops.tank_drive
 
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.firstinspires.ftc.teamcode.utils.Side
 import org.firstinspires.ftc.teamcode.teleops.TeleopBase
+import org.firstinspires.ftc.teamcode.utils.Side
 
 abstract class TankDriveBase : TeleopBase() {
 
@@ -15,17 +15,27 @@ abstract class TankDriveBase : TeleopBase() {
     override fun mainOpMode() {
         var duckTime = ElapsedTime()
 
+        Thread {
+            while (opModeIsActive()) {
+                // drive
+                when {
+                    aGamepad1.leftTrigger > .1 -> hw.setAdjustedWheelPower(
+                        -aGamepad1.leftTrigger,
+                        -aGamepad1.leftTrigger
+                    )
+                    aGamepad1.rightTrigger > .1 -> hw.setAdjustedWheelPower(
+                        aGamepad1.rightTrigger,
+                        aGamepad1.rightTrigger
+                    )
+                    aGamepad1.leftBumper -> hw.setAdjustedWheelPower(-0.8, 0.8)
+                    aGamepad1.rightBumper -> hw.setAdjustedWheelPower(0.8, -0.8)
+                    else -> hw.setAdjustedWheelPower(aGamepad1.leftY, aGamepad1.rightY)
+                }
+            }
+        }.start()
+
         while (opModeIsActive()) {
             if (aGamepad2.x) hw.resetGrabberEncoder()
-
-            // drive
-            when {
-                aGamepad1.leftBumper -> hw.setAdjustedWheelPower(1.0, 1.0)
-                aGamepad1.rightBumper -> hw.setAdjustedWheelPower(-1.0, -1.0)
-                aGamepad1.dpadLeft -> hw.setAdjustedWheelPower(-0.8, 0.8)
-                aGamepad1.dpadRight -> hw.setAdjustedWheelPower(0.8, -0.8)
-                else -> hw.setAdjustedWheelPower(aGamepad1.leftY, aGamepad1.rightY)
-            }
 
             // duck spinner
             if (aGamepad2.leftBumper) {

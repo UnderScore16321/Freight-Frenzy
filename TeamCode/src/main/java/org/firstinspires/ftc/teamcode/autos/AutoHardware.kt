@@ -3,12 +3,54 @@ package org.firstinspires.ftc.teamcode.autos
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode
+import com.qualcomm.robotcore.hardware.DistanceSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.utils.Hardware
 import kotlin.math.abs
+import kotlin.math.atan2
 import kotlin.math.max
+import kotlin.math.sqrt
 
 class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, camera) {
+
+    init {
+        initWheels()
+        initSensors()
+    }
+
+    //Sensors
+    lateinit var leftDist: DistanceSensor
+    lateinit var rightDist: DistanceSensor
+    lateinit var backDist: DistanceSensor
+
+    private fun initSensors() {
+        leftDist = opMode.hardwareMap[DistanceSensor::class.java, "distance sensor left"]
+        rightDist = opMode.hardwareMap[DistanceSensor::class.java, "distance sensor right"]
+        backDist = opMode.hardwareMap[DistanceSensor::class.java, "distance sensor back"]
+    }
+
+    fun driveToPoint(
+        targetX: Double, targetY: Double,
+        robotX: Double, robotY: Double,
+        driveDistanceOffset: Double
+    ): Double {
+        val x = targetX - robotX
+        val y = targetY - robotY
+
+        val heading = Math.toDegrees(atan2(y, x))
+        val distance = sqrt(x * x + y * y) - driveDistanceOffset
+
+        turnToHeading(heading)
+        driveInches(distance * 0.95)
+
+        opMode.telemetry.clearAll()
+        opMode.telemetry.addData("angle", heading)
+        opMode.telemetry.addData("distance", distance)
+        opMode.telemetry.update()
+
+        return distance * 0.95
+    }
+
 
     // Driving -------------------------------------------------------------------------------------
     private fun initWheels() {
@@ -32,7 +74,7 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         rightBack.velocity = speed
     }
 
-    fun driveInches(inches: Double, speedIn: Double = 0.6) {
+    fun driveInches(inches: Double, speedIn: Double = 0.8) {
         val speed = abs(speedIn).coerceIn(0.0, 1.0)
         setWheelPower(speed)
         setAllMotorModes(RunMode.STOP_AND_RESET_ENCODER)
@@ -184,7 +226,8 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         private const val MIN_DRIVE_SPEED = 0.3
 
         private const val TURN_P = 0.04
-//        private const val TURN_I = 0.0004
+
+        //        private const val TURN_I = 0.0004
 //        private const val TURN_D = 0.0025
         private const val TURN_I = 0
         private const val TURN_D = 0.001
@@ -192,9 +235,5 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         private const val MAX_TURN_SPEED = 0.4
         private const val TURN_TOLERANCE = 1.0
 
-    }
-
-    init {
-        initWheels()
     }
 }

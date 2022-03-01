@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.autos
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import org.firstinspires.ftc.teamcode.utils.Hardware
 import org.firstinspires.ftc.teamcode.utils.PosDetector
 
 @Autonomous(preselectTeleOp = "Red Tank Drive")
-class Auto : DetectionAuto() {
+@Disabled
+class OldQTAuto : DetectionAuto() {
     override fun getNewPosDetector(): PosDetector = PosDetector(
         telemetry,
         arrayOf(

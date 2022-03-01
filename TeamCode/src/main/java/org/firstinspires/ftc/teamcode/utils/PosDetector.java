@@ -44,7 +44,7 @@ public class PosDetector {
     private static final float H_MULT = 0.5f;
     private static final float S_MULT = 2.0f;
     private static final float L_MULT = 2.0f;
-    private static final float MIN_DIFF = 15;
+    private static final float MIN_DIFF = 50;
 
     public int regionOfImage(Bitmap image) {
         if (baseStates == null) throw new IllegalArgumentException();

@@ -27,8 +27,8 @@ public class PosDetectorFactory {
 
     public static PosDetector redRight(Telemetry telemetry) {
         return new PosDetector(telemetry, new PosDetector.ImRegion[]{
-                new PosDetector.ImRegion(0.34f, 0.5f, 0, 0.1f),
-                new PosDetector.ImRegion(5 * 0.125f, 7 * 0.125f, 0, 0.1f),
+                new PosDetector.ImRegion(0.48f, 0.52f, 0, 0.1f),
+                new PosDetector.ImRegion(0.8f, 0.85f, 0, 0.1f),
         });
     }
 
