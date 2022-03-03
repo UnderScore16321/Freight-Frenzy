@@ -14,7 +14,7 @@ public class ColorChangePosDetector implements PosDetector {
     private final ImRegion[] searchRegions;
     private float[][] baseStates;
     private List<Bitmap> baseImages;
-    private Telemetry telemetry;
+    private final Telemetry telemetry;
 
     public ColorChangePosDetector(Telemetry telemetry, ImRegion[] searchRegions) {
         this.telemetry = telemetry;
@@ -54,8 +54,8 @@ public class ColorChangePosDetector implements PosDetector {
         float[][] hsls = new float[searchRegions.length][3];
         for (int r = 0; r < searchRegions.length; r++) {
             float[] hsl = averageHSLInRegion(image, searchRegions[r]);
-            telemetry.addData("base " + r, hslToStr(baseStates[r]));
-            telemetry.addData("obs " + r, hslToStr(hsl));
+            telemetry.addData("base " + r, PosDetector.hslToStr(baseStates[r]));
+            telemetry.addData("obs " + r, PosDetector.hslToStr(hsl));
             hsls[r][0] = hsl[0];
             hsls[r][1] = hsl[1];
             hsls[r][2] = hsl[2];
@@ -142,51 +142,7 @@ public class ColorChangePosDetector implements PosDetector {
         int rT = r / count;
         int gT = g / count;
         int bT = b / count;
-        return rgbToHSL(rT, gT, bT);
-
-    }
-
-    private static String hslToStr(float[] hsl) {
-        return hsl[0] + ", " + hsl[1] + ", " + hsl[2];
-    }
-
-    private static float[] rgbToHSL(int rIn, int gIn, int bIn) {
-        float r = (float) (rIn / 255.0);
-        float g = (float) (gIn / 255.0);
-        float b = (float) (bIn / 255.0);
-
-        //	Minimum and Maximum RGB values are used in the HSL calculations
-        float min = Math.min(r, Math.min(g, b));
-        float max = Math.max(r, Math.max(g, b));
-
-        //  Calculate the Hue
-        float h = 0;
-
-        if (max == min) {
-            h = 0;
-        } else if (max == r) {
-            h = ((60 * (g - b) / (max - min)) + 360) % 360;
-        } else if (max == g) {
-            h = (60 * (b - r) / (max - min)) + 120;
-        } else if (max == b) {
-            h = (60 * (r - g) / (max - min)) + 240;
-        }
-
-        //  Calculate the Luminance
-        float l = (max + min) / 2;
-
-        //  Calculate the Saturation
-        float s = 0;
-
-        if (max == min) {
-            s = 0;
-        } else if (l <= .5f) {
-            s = (max - min) / (max + min);
-        } else {
-            s = (max - min) / (2 - max - min);
-        }
-
-        return new float[]{h, s * 100, l * 100};
+        return PosDetector.rgbToHSL(rT, gT, bT);
     }
 
 }

@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.utils.ColorChangePosDetector
 
 @Autonomous(preselectTeleOp = "Red Tank Drive")
 class RedRightAuto : DetectionAuto() {
-    override fun getNewPosDetector(): ColorChangePosDetector = PosDetectorFactory.redRight(telemetry)
+    override fun getNewPosDetector() = PosDetectorFactory.redRight(telemetry)
 
     override fun mainOpMode() {
         telemetry.clearAll()

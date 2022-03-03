@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.utils.Side
 
 @Autonomous(preselectTeleOp = "Red Tank Drive")
 class RedDuckAuto: DetectionAuto() {
-    override fun getNewPosDetector(): ColorChangePosDetector = PosDetectorFactory.redLeft(telemetry)
+    override fun getNewPosDetector() = PosDetectorFactory.redLeft(telemetry)
 
     override fun mainOpMode() {
         hw.driveInches(10.0)

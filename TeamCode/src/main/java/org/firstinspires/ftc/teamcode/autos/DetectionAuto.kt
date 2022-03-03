@@ -1,31 +1,18 @@
 package org.firstinspires.ftc.teamcode.autos
 
-import org.firstinspires.ftc.teamcode.utils.ColorChangePosDetector
+import org.firstinspires.ftc.teamcode.utils.BlackPosDetector
 
 abstract class DetectionAuto : AutoBase() {
 
-    protected lateinit var posDetector: ColorChangePosDetector
+    protected lateinit var posDetector: BlackPosDetector
 
-    abstract fun getNewPosDetector(): ColorChangePosDetector
+    abstract fun getNewPosDetector(): BlackPosDetector
 
     override fun getNewHardware() = AutoHardware(this, true)
 
     override fun beforeStart() {
         super.beforeStart()
-        telemetry.clearAll()
-        telemetry.printData("status", "camera initializing")
         posDetector = getNewPosDetector()
-
-        telemetry.clearAll()
-        telemetry.printData("status", "camera calibrating")
-        sleep(5000)
-
-        telemetry.clearAll()
-        telemetry.printData("status", "getting base state")
-        posDetector.useBaseStates(arrayListOf(hw.forceGetFrame()))
-
-        telemetry.clearAll()
-        telemetry.printData("status", "ready")
     }
 
     protected fun detectedPositionNow(): Int = posDetector.regionOfImage(hw.forceGetFrame())
