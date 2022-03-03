@@ -9,4 +9,23 @@ abstract class AutoBase: BaseOpMode<AutoHardware>() {
         super.beforeStart()
         hw.waitForImuCalibration(false)
     }
+
+    protected fun driveFromBackDistance(targetDistance: Double, currentDist: Double, speed: Double? = null) {
+        val distToDrive = targetDistance - currentDist
+        if (speed != null) {
+            hw.driveInches(distToDrive * 0.9, speed)
+        } else {
+            hw.driveInches(distToDrive * 0.9)
+        }
+    }
+
+    protected fun driveFromFrontDistance(targetDistance: Double, currentDist: Double, speed: Double? = null) {
+        val distToDrive = targetDistance - currentDist
+        if (speed != null) {
+            hw.driveInches(-distToDrive * 0.9, speed)
+        } else {
+            hw.driveInches(-distToDrive * 0.9)
+        }
+    }
+
 }

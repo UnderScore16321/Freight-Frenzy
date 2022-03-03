@@ -1,9 +1,6 @@
 package org.firstinspires.ftc.teamcode.autos.freight_auto
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.teamcode.autos.DetectionAuto
-import org.firstinspires.ftc.teamcode.autos.PosDetectorFactory
 import org.firstinspires.ftc.teamcode.utils.Hardware
 import org.firstinspires.ftc.teamcode.utils.Side
 
@@ -26,15 +23,14 @@ abstract class FreightAutoBase : DetectionAuto() {
         hw.grabberIsOpen = false
 
         // deliver preload
-        hw.driveInches(30.0) // clear the tse out of the way
+        if (level != Hardware.GrabberHeight.THIRD_LEVEL) hw.driveInches(30.0) // clear the tse out of the way
 
-
-        hw.driveInches(-15.0)
+        driveFromBackDistance(15.0, hw.backDistance())
         hw.turnToHeading(-35.0 * mult)
         hw.grabberHeight = level
 
         val toDrive = when (level) {
-            Hardware.GrabberHeight.FIRST_LEVEL -> 7.0
+            Hardware.GrabberHeight.FIRST_LEVEL -> 8.0
             Hardware.GrabberHeight.SECOND_LEVEL -> 5.0
             else -> 5.0
         }
@@ -43,24 +39,33 @@ abstract class FreightAutoBase : DetectionAuto() {
 
         // drive into warehouse
         hw.driveInches(-toDrive)
-        hw.turnToHeading(20.0 * mult)
-        hw.grabberHeight = Hardware.GrabberHeight.DOWN
+        hw.turnToHeading(20.0 * mult, log = true)
+        println(1)
+        Thread {
+            hw.grabberHeight = Hardware.GrabberHeight.DOWN
+        }.start()
+        println(2)
         hw.setWheelPower(-0.5)
+        println(3)
         sleep(1000)
+        println(4)
         hw.setWheelPower(0.0)
+        println(5)
         hw.turnToHeading(90.0 * mult)
         hw.driveInches(30.0)
+        hw.turnToHeading(90.0 * mult)
+        val frontDist = hw.frontDistance()
+        if (frontDist > 22.0) driveFromFrontDistance(22.0, frontDist)
 
         // grab freight
         hw.grabberIsOpen = false
         hw.grabberIsOpen = true
-        hw.driveInches(2.0)
         hw.driveInches(-1.0)
         hw.grabberIsOpen = false
 
         // deliver the freight
         hw.turnToHeading(85.0 * mult)
-        hw.driveInches(-15.0)
+        hw.driveInches(-17.0)
         hw.turnToHeading(90.0 * mult)
 
         val targetDist = 55.0
@@ -77,5 +82,7 @@ abstract class FreightAutoBase : DetectionAuto() {
         hw.turnToHeading(75.0 * mult)
         hw.driveInches(50.0)
         hw.grabberHeight = Hardware.GrabberHeight.DOWN
+
+        hw.turnToHeading(110.0 * mult)
     }
 }

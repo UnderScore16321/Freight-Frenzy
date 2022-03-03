@@ -88,8 +88,8 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
 
     // TURNING: ------------------------------------------------------------------------------------
 
-    fun turnToHeading(angle: Double) {
-        var time = ElapsedTime()
+    fun turnToHeading(angle: Double, log: Boolean = false) {
+        val time = ElapsedTime()
         setAllMotorModes(RunMode.RUN_WITHOUT_ENCODER)
 
         var error = headingError(angle)
@@ -111,7 +111,7 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
             opMode.telemetry.addData("error", error)
             opMode.telemetry.addData("time", time.milliseconds())
             opMode.telemetry.update()
-            println("${totalTime.seconds()}, $error")
+            if (log) println("${totalTime.seconds()}, $error")
 
             val power = (TURN_P * error + TURN_I * integralSum + TURN_D * derivative).addToAbs(
                 MIN_TURN_SPEED, MAX_TURN_SPEED
@@ -121,6 +121,7 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
             lastError = error
             loopTime.reset()
         }
+        if(log) println("STOPPED")
         setWheelPower(0.0)
     }
 
