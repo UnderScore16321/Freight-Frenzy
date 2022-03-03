@@ -3,12 +3,19 @@ package org.firstinspires.ftc.teamcode.autos
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode
+import com.qualcomm.robotcore.hardware.DistanceSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.utils.Hardware
 import kotlin.math.abs
 import kotlin.math.max
 
 class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, camera) {
+
+    init {
+        initWheels()
+    }
+
+    val frontDistanceSensor = opMode.hardwareMap[DistanceSensor::class.java, "dist"]
 
     // Driving -------------------------------------------------------------------------------------
     private fun initWheels() {
@@ -32,7 +39,7 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         rightBack.velocity = speed
     }
 
-    fun driveInches(inches: Double, speedIn: Double = 0.6) {
+    fun driveInches(inches: Double, speedIn: Double = 0.8) {
         val speed = abs(speedIn).coerceIn(0.0, 1.0)
         setWheelPower(speed)
         setAllMotorModes(RunMode.STOP_AND_RESET_ENCODER)
@@ -44,6 +51,7 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
             // adjust relative speed based on heading error.
             val error = headingError(startAngle)
             var steer = (error * DRIVE_P).coerceIn(-1.0, 1.0)
+//            var steer = 0.0
 
             // if driving in reverse, the motor correction also needs to be reversed
             if (inches < 0) steer *= -1.0
@@ -86,14 +94,17 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
 
         var lastError = 0.0
         var integralSum = 0.0
+        var loops = 0
 
         while ((time.milliseconds() < 1000) && !opMode.isStopRequested && (abs(error) > TURN_TOLERANCE || !wheelsAreStopped())) {
             error = headingError(angle)
-            if (error > 5 || error < -5) time = ElapsedTime()
+            if (error > 5 || error < -5) time.reset()
             val derivative = (error - lastError) / loopTime.seconds()
             integralSum += error * loopTime.seconds()
 
+            opMode.telemetry.addData("loops", loops++)
             opMode.telemetry.addData("error", error)
+            opMode.telemetry.addData("time", time.milliseconds())
             opMode.telemetry.update()
             println("${totalTime.seconds()}, $error")
 
@@ -108,11 +119,11 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         setWheelPower(0.0)
     }
 
-    private fun wheelsAreStopped(): Boolean =
-        leftFront.velocity < 50.0 &&
-                leftBack.velocity < 50.0 &&
-                rightFront.velocity < 50.0 &&
-                rightBack.velocity < 50.0
+    private fun wheelsAreStopped(): Boolean = true
+//        leftFront.velocity < 50.0 &&
+//                leftBack.velocity < 50.0 &&
+//                rightFront.velocity < 50.0 &&
+//                rightBack.velocity < 50.0
 
     private fun headingError(toAngle: Double): Double {
         return normalizeHeading(toAngle - robotHeading())
@@ -180,21 +191,18 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         private const val INCHES_PER_ROT = 3.14159 * WHEEL_DIAMETER
         private const val TICKS_PER_INCH = TICKS_PER_ROT / INCHES_PER_ROT
 
-        private const val DRIVE_P = 0.02
+        private const val DRIVE_P = 0.07
         private const val MIN_DRIVE_SPEED = 0.3
 
         private const val TURN_P = 0.04
-//        private const val TURN_I = 0.0004
+
+        //        private const val TURN_I = 0.0004
 //        private const val TURN_D = 0.0025
         private const val TURN_I = 0
         private const val TURN_D = 0.001
         private const val MIN_TURN_SPEED = 0.2
-        private const val MAX_TURN_SPEED = 0.4
+        private const val MAX_TURN_SPEED = 0.5
         private const val TURN_TOLERANCE = 1.0
 
-    }
-
-    init {
-        initWheels()
     }
 }

@@ -123,10 +123,10 @@ public class Hardware {
 
     private boolean grabberIsOpen = false;
 
-    private static final double RIGHT_CLOSED = 0.81;
+    private static final double RIGHT_CLOSED = 0.84;
     private static final double RIGHT_OPEN = 0.7;
     private static final double RIGHT_STOWED = 0.5;
-    private static final double LEFT_CLOSED = 0.59;
+    private static final double LEFT_CLOSED = 0.56;
     private static final double LEFT_OPEN = 0.7;
     private static final double LEFT_STOWED = 0.9;
 
@@ -170,7 +170,7 @@ public class Hardware {
      */
     public enum GrabberHeight {
         STOWED(580),
-        THIRD_LEVEL(400),
+        THIRD_LEVEL(350),
         SECOND_LEVEL(255),
         FIRST_LEVEL(125),
         DOWN(0);

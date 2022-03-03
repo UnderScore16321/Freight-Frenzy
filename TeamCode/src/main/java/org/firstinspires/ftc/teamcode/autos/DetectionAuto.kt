@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.autos
 
-import org.firstinspires.ftc.teamcode.utils.PosDetector
+import org.firstinspires.ftc.teamcode.utils.ColorChangePosDetector
 
 abstract class DetectionAuto : AutoBase() {
 
-    protected lateinit var posDetector: PosDetector
+    protected lateinit var posDetector: ColorChangePosDetector
 
-    abstract fun getNewPosDetector(): PosDetector
+    abstract fun getNewPosDetector(): ColorChangePosDetector
 
     override fun getNewHardware() = AutoHardware(this, true)
 

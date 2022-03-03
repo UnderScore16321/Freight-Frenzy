@@ -1,18 +1,21 @@
 package org.firstinspires.ftc.teamcode.autos
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import org.firstinspires.ftc.teamcode.utils.Hardware
-import org.firstinspires.ftc.teamcode.utils.PosDetector
+import org.firstinspires.ftc.teamcode.utils.ColorChangePosDetector
 
 @Autonomous(preselectTeleOp = "Red Tank Drive")
-class Auto : DetectionAuto() {
-    override fun getNewPosDetector(): PosDetector = PosDetector(
-        telemetry,
-        arrayOf(
-            PosDetector.ImRegion(0.00f, 0.5f, 0.0f, 0.1f),
-            PosDetector.ImRegion(0.25f, 0.35f, 0.0f, 0.2f),
+@Disabled
+class OldQTAuto : DetectionAuto() {
+    override fun getNewPosDetector(): ColorChangePosDetector =
+        ColorChangePosDetector(
+            telemetry,
+            arrayOf(
+                PosDetector.ImRegion(0.00f, 0.5f, 0.0f, 0.1f),
+                PosDetector.ImRegion(0.25f, 0.35f, 0.0f, 0.2f),
+            )
         )
-    )
 
     override fun mainOpMode() {
         telemetry.clearAll()

@@ -1,16 +1,15 @@
 package org.firstinspires.ftc.teamcode.tests
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import org.firstinspires.ftc.teamcode.autos.DetectionAuto
-import org.firstinspires.ftc.teamcode.utils.PosDetector
+import org.firstinspires.ftc.teamcode.utils.ColorChangePosDetector
 import org.firstinspires.ftc.teamcode.autos.PosDetectorFactory
 
 @TeleOp
-@Disabled
+//@Disabled
 class VisionTest : DetectionAuto() {
-    override fun getNewPosDetector(): PosDetector {
-        return PosDetectorFactory.blueRight(telemetry)
+    override fun getNewPosDetector(): ColorChangePosDetector {
+        return PosDetectorFactory.redRight(telemetry)
     }
 
     override fun mainOpMode() {
