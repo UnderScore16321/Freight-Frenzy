@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.utils.ColorChangePosDetector
 
 @Autonomous
 class DetectionTest: DetectionAuto() {
-    override fun getNewPosDetector(): ColorChangePosDetector = PosDetectorFactory.redRight(telemetry)
+    override fun getNewPosDetector() = PosDetectorFactory.redRight(telemetry)
 
     override fun mainOpMode() {
         while(!isStopRequested) {

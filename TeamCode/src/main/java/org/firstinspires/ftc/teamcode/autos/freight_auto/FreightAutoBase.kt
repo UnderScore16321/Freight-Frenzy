@@ -27,14 +27,22 @@ abstract class FreightAutoBase : DetectionAuto() {
 
         // deliver preload
         hw.driveInches(30.0) // clear the tse out of the way
+
+
         hw.driveInches(-15.0)
         hw.turnToHeading(-35.0 * mult)
         hw.grabberHeight = level
-        hw.driveInches(5.0)
+
+        val toDrive = when (level) {
+            Hardware.GrabberHeight.FIRST_LEVEL -> 7.0
+            Hardware.GrabberHeight.SECOND_LEVEL -> 5.0
+            else -> 5.0
+        }
+        hw.driveInches(toDrive)
         hw.grabberIsOpen = true
 
         // drive into warehouse
-        hw.driveInches(-5.0)
+        hw.driveInches(-toDrive)
         hw.turnToHeading(20.0 * mult)
         hw.grabberHeight = Hardware.GrabberHeight.DOWN
         hw.setWheelPower(-0.5)
@@ -56,7 +64,7 @@ abstract class FreightAutoBase : DetectionAuto() {
         hw.turnToHeading(90.0 * mult)
 
         val targetDist = 55.0
-        val distToDrive = targetDist - hw.frontDistanceSensor.getDistance(DistanceUnit.INCH)
+        val distToDrive = targetDist - hw.frontDistance()
 
         hw.driveInches(-distToDrive * 0.9)
         hw.turnToHeading(-20.0 * mult)

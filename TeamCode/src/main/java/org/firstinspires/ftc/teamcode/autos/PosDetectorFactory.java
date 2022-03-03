@@ -24,14 +24,14 @@ public class PosDetectorFactory {
 
     public static BlackPosDetector redLeft(Telemetry telemetry) {
         return new BlackPosDetector(telemetry, Arrays.asList(
-                new ColorChangePosDetector.ImRegion(0.025f, 0.125f, 0, 0.16f),
-                new ColorChangePosDetector.ImRegion(0.45f, 0.55f, 0, 0.16f)
+                new ColorChangePosDetector.ImRegion(0.525f, 0.575f, 0, 0.1f),
+                new ColorChangePosDetector.ImRegion(0.9f, 0.95f, 0, 0.1f)
         ));
     }
 
     public static BlackPosDetector redRight(Telemetry telemetry) {
         return new BlackPosDetector(telemetry, Arrays.asList(
-                new ColorChangePosDetector.ImRegion(0.5f, 0.55f, 0, 0.1f),
+                new ColorChangePosDetector.ImRegion(0.45f, 0.5f, 0, 0.1f),
                 new ColorChangePosDetector.ImRegion(0.8f, 0.85f, 0, 0.1f)
         ));
     }

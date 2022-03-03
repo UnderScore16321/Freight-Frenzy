@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.hardware.DistanceSensor
 import com.qualcomm.robotcore.util.ElapsedTime
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.teamcode.utils.Hardware
 import kotlin.math.abs
 import kotlin.math.max
@@ -15,7 +16,11 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
         initWheels()
     }
 
-    val frontDistanceSensor = opMode.hardwareMap[DistanceSensor::class.java, "dist"]
+    fun frontDistance(): Double = frontDistanceSensor.getDistance(DistanceUnit.INCH)
+    fun backDistance(): Double = backDistanceSensor.getDistance(DistanceUnit.INCH)
+
+    private val frontDistanceSensor = opMode.hardwareMap[DistanceSensor::class.java, "dist front"]
+    private val backDistanceSensor = opMode.hardwareMap[DistanceSensor::class.java, "dist back"]
 
     // Driving -------------------------------------------------------------------------------------
     private fun initWheels() {

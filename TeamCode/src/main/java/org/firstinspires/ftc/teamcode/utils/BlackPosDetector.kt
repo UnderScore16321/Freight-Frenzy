@@ -7,8 +7,8 @@ import org.firstinspires.ftc.teamcode.utils.PosDetector.ImRegion
 
 class BlackPosDetector(val telemetry: Telemetry?, val searchRegions: List<ImRegion>) {
     companion object {
-        private val BLACK_THRESHOLD = 0.1
-        private val BLACK_PERCENT_THRESHOLD = 0.8
+        private val BLACK_THRESHOLD = 30
+        private val BLACK_PERCENT_THRESHOLD = 0.6
     }
 
     fun regionOfImage(image: Bitmap): Int {
@@ -28,6 +28,7 @@ class BlackPosDetector(val telemetry: Telemetry?, val searchRegions: List<ImRegi
 
         var count = 0
         var blackPixels = 0
+        var totalL = 0.0
 
         for (i in xStart until xEnd) {
             for (j in yStart until yEnd) {
@@ -36,10 +37,15 @@ class BlackPosDetector(val telemetry: Telemetry?, val searchRegions: List<ImRegi
                 val hsl =
                     PosDetector.rgbToHSL(Color.red(pixel), Color.green(pixel), Color.blue(pixel))
                 val l = hsl[2]
+//                println(PosDetector.hslToStr(hsl))
+                totalL += l
                 if (l < BLACK_THRESHOLD) blackPixels++
             }
         }
 
+        println("BLACK PIXELS: >>>>>>>> $blackPixels")
+        println("PERCENT >>>>>>> ${blackPixels.toDouble() / count.toDouble()}")
+        println("AVG L >>>>>>>> ${totalL/count}")
         return blackPixels.toDouble() / count.toDouble()
     }
 }
