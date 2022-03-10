@@ -1,9 +1,12 @@
-package org.firstinspires.ftc.teamcode.autos
+package org.firstinspires.ftc.teamcode.tests
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import org.firstinspires.ftc.teamcode.utils.ColorChangePosDetector
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
+import org.firstinspires.ftc.teamcode.autos.DetectionAuto
+import org.firstinspires.ftc.teamcode.autos.PosDetectorFactory
 
 @Autonomous
+@Disabled
 class DetectionTest: DetectionAuto() {
     override fun getNewPosDetector() = PosDetectorFactory.redRight(telemetry)
 

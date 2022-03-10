@@ -18,9 +18,11 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
 
     fun frontDistance(): Double = frontDistanceSensor.getDistance(DistanceUnit.INCH)
     fun backDistance(): Double = backDistanceSensor.getDistance(DistanceUnit.INCH)
+    fun frontColorDistance(): Double = colorDist.getDistance(DistanceUnit.INCH)
 
     private val frontDistanceSensor = opMode.hardwareMap[DistanceSensor::class.java, "dist front"]
     private val backDistanceSensor = opMode.hardwareMap[DistanceSensor::class.java, "dist back"]
+    private val colorDist = opMode.hardwareMap[DistanceSensor::class.java, "front color"]
 
     // Driving -------------------------------------------------------------------------------------
     private fun initWheels() {
@@ -87,6 +89,20 @@ class AutoHardware(opMode: LinearOpMode, camera: Boolean) : Hardware(opMode, cam
     }
 
     // TURNING: ------------------------------------------------------------------------------------
+
+    fun turnToMinDist(minDist: Double, direction: Double, speed: Double = 0.3) {
+        setWheelPower(speed * direction, -speed * direction)
+
+        println("----------------")
+        var dist = frontDistance()
+        println(dist)
+        while (opMode.opModeIsActive() && dist > minDist) {
+            println(dist)
+            dist = frontDistance()
+        }
+        println(">>$dist")
+        setWheelPower(0.0)
+    }
 
     fun turnToHeading(angle: Double, log: Boolean = false) {
         val time = ElapsedTime()

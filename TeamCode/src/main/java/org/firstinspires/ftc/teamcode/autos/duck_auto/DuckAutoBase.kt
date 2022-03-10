@@ -11,9 +11,12 @@ abstract class DuckAutoBase: DetectionAuto() {
     override fun mainOpMode() {
         val mult = if (side == Side.RED) 1 else -1
 
-        val level = when (detectedPositionNow()) {
-            -1 -> Hardware.GrabberHeight.FIRST_LEVEL
-            0 -> Hardware.GrabberHeight.SECOND_LEVEL
+        val level = when (detectedPositionNow() to side) {
+            -1 to Side.RED -> Hardware.GrabberHeight.FIRST_LEVEL
+            0 to Side.RED -> Hardware.GrabberHeight.SECOND_LEVEL
+            1 to Side.RED -> Hardware.GrabberHeight.THIRD_LEVEL
+            0 to Side.BLUE -> Hardware.GrabberHeight.FIRST_LEVEL
+            1 to Side.BLUE -> Hardware.GrabberHeight.SECOND_LEVEL
             else -> Hardware.GrabberHeight.THIRD_LEVEL
         }
         telemetry.addData("level", level)
@@ -21,15 +24,16 @@ abstract class DuckAutoBase: DetectionAuto() {
 
         hw.grabberIsOpen = false
 
+        hw.turnToHeading(-45.0)
         hw.driveInches(15.0)
         hw.turnToHeading(90.0 * mult)
         driveFromBackDistance(0.0, hw.backDistance(), speed = 0.3)
         hw.turnToHeading(0.0)
         driveFromBackDistance(8.0, hw.backDistance(), speed = 0.3)
 
-        hw.setSpinnerPower(0.6, Side.RED)
+        hw.setSpinnerPower(0.6, side)
         sleep(5000)
-        hw.setSpinnerPower(0.0, Side.RED)
+        hw.setSpinnerPower(0.0, side)
 
         hw.turnToHeading(0.0)
 //        hw.driveInches(24.0)

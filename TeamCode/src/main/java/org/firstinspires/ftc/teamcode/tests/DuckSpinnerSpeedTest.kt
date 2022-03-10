@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.teleops.TeleopBase
 import org.firstinspires.ftc.teamcode.utils.Side
 
 @TeleOp
-//@Disabled
+@Disabled
 class DuckSpinnerSpeedTest : TeleopBase() {
     override fun mainOpMode() {
         var speed = 0.5

@@ -169,7 +169,7 @@ public class Hardware {
      * A height that the grabber can be set at.
      */
     public enum GrabberHeight {
-        STOWED(580),
+//        OVER(900),
         THIRD_LEVEL(350),
         SECOND_LEVEL(255),
         FIRST_LEVEL(125),
@@ -192,6 +192,7 @@ public class Hardware {
          * The GrabberHeight above this one. If there is no height above it returns this.
          */
         public GrabberHeight above() {
+//            if (this == OVER) return OVER;
             if (this == THIRD_LEVEL) return THIRD_LEVEL;
             if (this == SECOND_LEVEL) return THIRD_LEVEL;
             if (this == FIRST_LEVEL) return SECOND_LEVEL;
@@ -202,6 +203,7 @@ public class Hardware {
          * The GrabberHeight below this one. If there is no height below it returns this.
          */
         public GrabberHeight below() {
+//            if (this == OVER) return THIRD_LEVEL;
             if (this == THIRD_LEVEL) return SECOND_LEVEL;
             if (this == SECOND_LEVEL) return FIRST_LEVEL;
             if (this == FIRST_LEVEL) return DOWN;

@@ -10,15 +10,15 @@ import java.util.Arrays;
 public class PosDetectorFactory {
     public static BlackPosDetector blueLeft(Telemetry telemetry) {
         return new BlackPosDetector(telemetry, Arrays.asList(
-                new ColorChangePosDetector.ImRegion(0.9f, 1.0f, 0, 0.16f),
-                new ColorChangePosDetector.ImRegion(0.5f, 0.6f, 0, 0.16f)
+                new ColorChangePosDetector.ImRegion(0.55f, 0.6f, 0, 0.16f),
+                new ColorChangePosDetector.ImRegion(0.9f, 0.95f, 0, 0.16f)
         ));
     }
 
     public static BlackPosDetector blueRight(Telemetry telemetry) {
         return new BlackPosDetector(telemetry, Arrays.asList(
-                new ColorChangePosDetector.ImRegion(0.5f, 0.6f, 0, 0.16f),
-                new ColorChangePosDetector.ImRegion(0.9f, 1.0f, 0, 0.16f)
+                new ColorChangePosDetector.ImRegion(0.45f, 0.55f, 0, 0.16f),
+                new ColorChangePosDetector.ImRegion(0.85f, 0.9f, 0, 0.16f)
         ));
     }
 
